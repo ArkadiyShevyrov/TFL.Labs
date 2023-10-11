@@ -29,7 +29,7 @@ public class Lexeme {
         return Pattern.compile(regex).matcher(symbol).find();
     }
 
-    enum LexemeType {
+    public enum LexemeType {
         SYMBOL("[a-zA-Z0-9]+"),
         OPEN_BRACKET("\\("),
         CLOSE_BRACKET("\\)"),

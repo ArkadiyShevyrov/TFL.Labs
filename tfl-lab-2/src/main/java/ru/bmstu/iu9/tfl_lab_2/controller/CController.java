@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bmstu.iu9.tfl_lab_2.model.parser.Tree;
-import ru.bmstu.iu9.tfl_lab_2.model.parser.lexeme.IterLexeme;
-import ru.bmstu.iu9.tfl_lab_2.model.parser.lexeme.Lexeme;
 import ru.bmstu.iu9.tfl_lab_2.service.Parser;
 import java.util.List;
 
@@ -34,7 +32,68 @@ public class CController implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Tree tree = parser.parser("(ab9|8c)***a");
-        log.info(tree.toString());
+        Tree tree = parser.parser("((abc)*|(cde)*)*");
+        Tree ssnf = ssnf(tree);
+        log.info(ssnf.toString());
+    }
+
+    public Tree ssnf(Tree tree) {
+        switch (tree.getType()) {
+            case SYMBOL -> {
+                return tree;
+            }
+            case OR -> {
+                return new Tree(Tree.Type.OR, List.of(
+                        ssnf(tree.getChildren().get(0)),
+                        ssnf(tree.getChildren().get(1))
+                ));
+            }
+            case CONCAT -> {
+                return new Tree(Tree.Type.CONCAT, List.of(
+                        ssnf(tree.getChildren().get(0)),
+                        ssnf(tree.getChildren().get(1))
+                ));
+            }
+            case ASTERISK -> {
+                return new Tree(Tree.Type.ASTERISK, List.of(
+                        ss(tree.getChildren().get(0))
+                ));
+            }
+            case GROUP -> {
+                return new Tree(Tree.Type.GROUP, List.of(
+                        ssnf(tree.getChildren().get(0))
+                ));
+            }
+            default -> throw new RuntimeException();
+        }
+    }
+
+    public Tree ss(Tree tree) {
+        switch (tree.getType()) {
+            case SYMBOL -> {
+                return tree;
+            }
+            case OR -> {
+                return new Tree(Tree.Type.OR, List.of(
+                        ss(tree.getChildren().get(0)),
+                        ss(tree.getChildren().get(1))
+                ));
+            }
+            case CONCAT -> {
+                return new Tree(Tree.Type.CONCAT, List.of(
+                        ssnf(tree.getChildren().get(0)),
+                        ssnf(tree.getChildren().get(1))
+                ));
+            }
+            case ASTERISK -> {
+                return ss(tree.getChildren().get(0));
+            }
+            case GROUP -> {
+                return new Tree(Tree.Type.GROUP, List.of(
+                        ss(tree.getChildren().get(0))
+                ));
+            }
+            default -> throw new RuntimeException();
+        }
     }
 }

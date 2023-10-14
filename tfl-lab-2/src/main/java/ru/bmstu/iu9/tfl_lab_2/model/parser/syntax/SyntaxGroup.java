@@ -3,6 +3,7 @@ package ru.bmstu.iu9.tfl_lab_2.model.parser.syntax;
 import ru.bmstu.iu9.tfl_lab_2.model.parser.Tree;
 import ru.bmstu.iu9.tfl_lab_2.model.parser.lexeme.IterLexeme;
 import ru.bmstu.iu9.tfl_lab_2.model.parser.lexeme.Lexeme;
+import java.util.List;
 
 public class SyntaxGroup implements Syntax {
     @Override
@@ -22,7 +23,7 @@ public class SyntaxGroup implements Syntax {
                 throw new RuntimeException();
             }
             iterLexeme.next();
-            return parseOne;
+            return new Tree(Tree.Type.GROUP, List.of(parseOne));
         }
         throw new RuntimeException();
     }

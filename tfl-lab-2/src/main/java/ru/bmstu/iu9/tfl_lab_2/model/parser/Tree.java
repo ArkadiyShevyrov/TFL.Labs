@@ -38,14 +38,14 @@ public class Tree implements Serializable {
     }
 
     public static void drawTree(Tree root) {
-        printTree(root, "", true);
+        printTree(root, "", false);
     }
 
     private static void printTree(Tree root, String prefix, boolean isLeft) {
         if (root != null) {
             log.info(prefix + (isLeft ? "├── " : "└── ") + root.getType() +
                     (root.getValue() != null ? " " + root.getValue() : ""));
-            printTree(root.left, prefix + (isLeft ? "│   " : "    "), true);
+            printTree(root.left, prefix + (isLeft ? "│   " : "    "), root.right != null);
             printTree(root.right, prefix + (isLeft ? "│   " : "    "), false);
         }
     }

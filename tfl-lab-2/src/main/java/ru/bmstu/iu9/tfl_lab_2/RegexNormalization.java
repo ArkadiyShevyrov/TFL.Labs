@@ -1,6 +1,8 @@
 package ru.bmstu.iu9.tfl_lab_2;
 
 import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.Collections;
 
 class Tree {
     char value;
@@ -17,24 +19,57 @@ class Tree {
 }
 @Slf4j
 public class RegexNormalization {
-    public static Tree normalizeAssociativity(Tree root) {
+    public static Tree normalizeCommutativity(Tree root) {
         if (root == null) {
             return null;
         }
 
         if (root.value == '|') {
-            while (root.left != null && root.left.value == '|') {
-                // Применяем ассоциативность
-                Tree leftChild = root.left;
-                root.left = leftChild.right;
-                leftChild.right = root;
-                root = leftChild;
-            }
+            // Собираем все операнды в список
+            ArrayList<Character> operands = new ArrayList<>();
+            collectOperands(root, operands);
+
+            // Сортируем операнды по алфавиту
+            Collections.sort(operands);
+
+            // Создаем новое дерево с отсортированными операндами
+            Tree sortedTree = createTreeFromSortedOperands(operands);
+
+            return sortedTree;
         }
 
-        // Рекурсивно применяем ассоциативность к левому и правому поддеревьям
-        root.left = normalizeAssociativity(root.left);
-        root.right = normalizeAssociativity(root.right);
+        // Рекурсивно применяем коммутативность к левому и правому поддеревьям
+        root.left = normalizeCommutativity(root.left);
+        root.right = normalizeCommutativity(root.right);
+
+        return root;
+    }
+
+    public static void collectOperands(Tree root, ArrayList<Character> operands) {
+        if (root == null) {
+            return;
+        }
+
+        if (Character.isLetter(root.value)) {
+            operands.add(root.value);
+        }
+
+        collectOperands(root.left, operands);
+        collectOperands(root.right, operands);
+    }
+
+    public static Tree createTreeFromSortedOperands(ArrayList<Character> operands) {
+        if (operands.isEmpty()) {
+            return null;
+        }
+
+        Tree root = new Tree(operands.get(0));
+        Tree current = root;
+
+        for (int i = 1; i < operands.size(); i++) {
+            current.right = new Tree(operands.get(i));
+            current = current.right;
+        }
 
         return root;
     }
@@ -50,20 +85,21 @@ public class RegexNormalization {
     public static void main(String[] args) {
         // Пример дерева регулярного выражения
         Tree root = new Tree('|');
-        root.left = new Tree('|');
-        root.left.left = new Tree('|');
-        root.left.left.left = new Tree('a');
-        root.left.left.right = new Tree('b');
-        root.left.right = new Tree('c');
-        root.right = new Tree('d');
+        root.left = new Tree('c');
+        Tree rightSubtree = new Tree('|');
+        rightSubtree.left = new Tree('a');
+        rightSubtree.right = new Tree('|');
+        rightSubtree.right.left = new Tree('d');
+        rightSubtree.right.right = new Tree('b');
+        root.right = rightSubtree;
 
         System.out.println("Исходное дерево:");
-        printTree(root, "", true);
+        printTree(root, "", false);
 
-        // Нормализация по ассоциативности
-        root = normalizeAssociativity(root);
+        // Нормализация по коммутативности
+        root = normalizeCommutativity(root);
 
         System.out.println("\nНормализованное дерево:");
-        printTree(root, "", true);
+        printTree(root, "", false);
     }
 }

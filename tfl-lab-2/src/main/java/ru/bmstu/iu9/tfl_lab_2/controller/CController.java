@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bmstu.iu9.tfl_lab_2.model.parser.Tree;
 import ru.bmstu.iu9.tfl_lab_2.service.Parser;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 @Slf4j
 @Tag(name = "Lab2", description = "Lab 2 description")
@@ -47,6 +49,70 @@ public class CController implements CommandLineRunner {
         return root;
     }
 
+    public static Tree normalizeCommutativity(Tree root) {
+        if (root == null) {
+            return null;
+        }
+
+        if (root.getType() == Tree.Type.OR) {
+            // Собираем все операнды в список
+            ArrayList<Tree> operands = collectOperands(root);
+            operands.sort(Comparator.comparing(Tree::toString));
+            return createTreeFromSortedOperands(operands);
+        }
+
+        // Рекурсивно применяем коммутативность к левому и правому поддеревьям
+        root.setLeft(normalizeCommutativity(root.getLeft()));
+        root.setRight(normalizeCommutativity(root.getRight()));
+
+        return root;
+    }
+
+    public static ArrayList<Tree> collectOperands(Tree root) {
+        ArrayList<Tree> operands = new ArrayList<>();
+        if (root == null) {
+            return null;
+        }
+
+        if (root.getType() == Tree.Type.OR) {
+            if (root.getLeft().getType() != Tree.Type.OR) {
+                operands.add(root.getLeft());
+            } else {
+                operands.addAll(collectOperands(root.getLeft()));
+            }
+            if (root.getRight().getType() != Tree.Type.OR) {
+                operands.add(root.getRight());
+            } else {
+                operands.addAll(collectOperands(root.getLeft()));
+
+            }
+        }
+        return operands;
+    }
+
+    public static Tree createTreeFromSortedOperands(ArrayList<Tree> operands) {
+        if (operands.isEmpty()) {
+            return null;
+        }
+
+        Tree root = new Tree(Tree.Type.OR, operands.get(0));
+        Tree current = root;
+
+        for (int i = 1; i < operands.size()-1; i++) {
+            if (i == operands.size() - 2) {
+                Tree temp = new Tree(Tree.Type.OR, operands.get(i), operands.get(i+1));
+                current.setRight(temp);
+                current = temp;
+                continue;
+            }
+            Tree temp = new Tree(Tree.Type.OR, operands.get(i));
+            current.setRight(temp);
+            current = temp;
+        }
+
+        return root;
+    }
+
     @Operation(description = "")
     @PostMapping(value = "/ss")
     public ResponseEntity<String> create(
@@ -62,7 +128,7 @@ public class CController implements CommandLineRunner {
         Tree ssnfTree = ssnf(SerializationUtils.clone(tree));
         Tree.drawTree(ssnfTree);
         log.info(ssnfTree.toString());
-        Tree normTree = normalizeAssociativity(SerializationUtils.clone(ssnfTree));
+        Tree normTree = normalizeCommutativity(SerializationUtils.clone(ssnfTree));
         Tree.drawTree(normTree);
         log.info(normTree.toString());
     }

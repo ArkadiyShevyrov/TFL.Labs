@@ -3,7 +3,7 @@ package ru.bmstu.iu9.tfl_lab_2.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.stereotype.Service;
-import ru.bmstu.iu9.tfl_lab_2.model.parser.Tree;
+import ru.bmstu.iu9.tfl_lab_2.model.Tree;
 import ru.bmstu.iu9.tfl_lab_2.utils.ACI;
 import ru.bmstu.iu9.tfl_lab_2.utils.DSTR;
 import ru.bmstu.iu9.tfl_lab_2.utils.Parser;

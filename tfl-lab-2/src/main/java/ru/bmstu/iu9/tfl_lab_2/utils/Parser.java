@@ -1,16 +1,15 @@
 package ru.bmstu.iu9.tfl_lab_2.utils;
 
 import lombok.experimental.UtilityClass;
-import ru.bmstu.iu9.tfl_lab_2.model.parser.Tree;
-import ru.bmstu.iu9.tfl_lab_2.model.parser.lexeme.IterLexeme;
-import ru.bmstu.iu9.tfl_lab_2.model.parser.lexeme.Lexeme;
-import ru.bmstu.iu9.tfl_lab_2.model.parser.syntax.SyntaxRegex;
+import ru.bmstu.iu9.tfl_lab_2.model.Tree;
+import ru.bmstu.iu9.tfl_lab_2.model.lexeme.IterLexeme;
+import ru.bmstu.iu9.tfl_lab_2.model.lexeme.Lexeme;
+import ru.bmstu.iu9.tfl_lab_2.model.syntax.SyntaxRegex;
 import java.util.ArrayList;
 import java.util.List;
 
 @UtilityClass
 public class Parser {
-
     public Tree parser(String data) {
         return syntacticalAnalyze(lexicalAnalyze(data));
     }

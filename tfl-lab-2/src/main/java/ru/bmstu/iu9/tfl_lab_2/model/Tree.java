@@ -1,4 +1,4 @@
-package ru.bmstu.iu9.tfl_lab_2.model.parser;
+package ru.bmstu.iu9.tfl_lab_2.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -75,7 +75,6 @@ public class Tree implements Serializable {
             default -> {
                 return "";
             }
-
         }
     }
 

@@ -1,7 +1,7 @@
 package ru.bmstu.iu9.tfl_lab_2.utils;
 
 import lombok.experimental.UtilityClass;
-import ru.bmstu.iu9.tfl_lab_2.model.parser.Tree;
+import ru.bmstu.iu9.tfl_lab_2.model.Tree;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -43,12 +43,11 @@ public class ACI {
         }
         root.setLeft(normalizeCommutativity(root.getLeft()));
         root.setRight(normalizeCommutativity(root.getRight()));
-
         return root;
     }
 
     //TODO проверить что в этом методе нет багов
-    public  Tree normalizeIdempotency(Tree root) {
+    public Tree normalizeIdempotency(Tree root) {
         if (root == null) {
             return null;
         }

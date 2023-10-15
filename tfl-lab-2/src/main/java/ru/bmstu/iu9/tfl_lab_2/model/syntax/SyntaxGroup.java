@@ -1,9 +1,8 @@
-package ru.bmstu.iu9.tfl_lab_2.model.parser.syntax;
+package ru.bmstu.iu9.tfl_lab_2.model.syntax;
 
-import ru.bmstu.iu9.tfl_lab_2.model.parser.Tree;
-import ru.bmstu.iu9.tfl_lab_2.model.parser.lexeme.IterLexeme;
-import ru.bmstu.iu9.tfl_lab_2.model.parser.lexeme.Lexeme;
-import java.util.List;
+import ru.bmstu.iu9.tfl_lab_2.model.Tree;
+import ru.bmstu.iu9.tfl_lab_2.model.lexeme.IterLexeme;
+import ru.bmstu.iu9.tfl_lab_2.model.lexeme.Lexeme;
 
 public class SyntaxGroup implements Syntax {
     @Override

@@ -20,7 +20,7 @@ public class CController {
 
     @Operation(description = "")
     @PostMapping(value = "/ss")
-    public ResponseEntity<String> create(String regex) {
+    public ResponseEntity<String> optimizationRegex(String regex) {
         String optimizationRegex = optimizationService.optimization(regex);
         return ResponseEntity.ok().body(optimizationRegex);
     }

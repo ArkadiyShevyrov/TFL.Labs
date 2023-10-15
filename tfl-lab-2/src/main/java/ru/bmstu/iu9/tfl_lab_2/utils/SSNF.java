@@ -1,7 +1,7 @@
 package ru.bmstu.iu9.tfl_lab_2.utils;
 
 import lombok.experimental.UtilityClass;
-import ru.bmstu.iu9.tfl_lab_2.model.parser.Tree;
+import ru.bmstu.iu9.tfl_lab_2.model.Tree;
 
 @UtilityClass
 public class SSNF {

@@ -1,4 +1,4 @@
-package ru.bmstu.iu9.tfl_lab_2.model.parser.lexeme;
+package ru.bmstu.iu9.tfl_lab_2.model.lexeme;
 
 import lombok.Getter;
 import lombok.ToString;

@@ -1,12 +1,12 @@
-package ru.bmstu.iu9.tfl_lab_2.model.parser.lexeme;
+package ru.bmstu.iu9.tfl_lab_2.model.lexeme;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class IterLexeme {
     private final List<Lexeme> lexemes;
-    private int position;
     private final int size;
+    private int position;
 
     public IterLexeme(List<Lexeme> lexemes) {
         this.lexemes = new ArrayList<>(lexemes);
@@ -24,5 +24,4 @@ public class IterLexeme {
     public void next() {
         position++;
     }
-
 }

@@ -38,7 +38,7 @@ public class Tree implements Serializable {
     }
 
     public static String drawTree(Tree root) {
-        return "\n" +printTree(root, "", false);
+        return "\n" + printTree(root, "", false);
     }
 
     private static String printTree(Tree root, String prefix, boolean isLeft) {
@@ -77,6 +77,34 @@ public class Tree implements Serializable {
 
         }
     }
+
+//    public static Tree applyDSTR(Tree root) {
+//        switch (root.type) {
+//            case SYMBOL -> {
+//                return root;
+//            }
+//            case CONCAT -> {
+//                // Применяем левое распределение (DSTRL)
+//                Tree newLeft = new Tree(Type.CONCAT, applyDSTR(root.left), applyDSTR(root.right));
+//                Tree newRight = applyDSTR(root.right);
+//                return new Tree(Type.CONCAT, newLeft, newRight);
+//            }
+//            case OR -> {
+//                // Применяем правое распределение (DSTRR)
+//                Tree newLeft = applyDSTR(root.left);
+//                Tree newRight = applyDSTR(root.right);
+//                return new Tree(Type.OR, newLeft, newRight);
+//            }
+//            case ASTERISK -> {
+//                // Применяем правое распределение (DSTRR)
+//                Tree newChild = applyDSTR(root.left);
+//                return new Tree(Type.ASTERISK, newChild);
+//            }
+//            default -> {
+//                return null;
+//            }
+//        }
+//    }
 
     public enum Type {
         OR,

@@ -156,6 +156,43 @@ public class CController implements CommandLineRunner {
         return root;
     }
 
+    private static Tree dstrTree(Tree root) {
+        if (root == null) {
+            return null;
+        }
+        //DSTRL
+        if (root.getType() == Tree.Type.CONCAT &&
+                root.getLeft().getType() == Tree.Type.OR) {
+            root = new Tree(
+                    Tree.Type.OR,
+                    new Tree(
+                            Tree.Type.CONCAT,
+                            root.getLeft().getLeft(),
+                            root.getRight()),
+                    new Tree(
+                            Tree.Type.CONCAT,
+                            root.getLeft().getRight(),
+                            root.getRight()));
+        }
+        //DSTRR
+        if (root.getType() == Tree.Type.CONCAT &&
+                root.getRight().getType() == Tree.Type.OR) {
+            root = new Tree(
+                    Tree.Type.OR,
+                    new Tree(
+                            Tree.Type.CONCAT,
+                            root.getLeft(),
+                            root.getRight().getLeft()),
+                    new Tree(
+                            Tree.Type.CONCAT,
+                            root.getLeft(),
+                            root.getRight().getRight()));
+        }
+        root.setLeft(dstrTree(root.getLeft()));
+        root.setRight(dstrTree(root.getRight()));
+        return root;
+    }
+
     @Operation(description = "")
     @PostMapping(value = "/ss")
     public ResponseEntity<String> create(
@@ -165,7 +202,8 @@ public class CController implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Tree tree = parser.parser("(((a|c|c|c|a|b|a)|b)*|((acd)e)*)*");
+//        Tree tree = parser.parser("(((a|c|c|c|a|b|a)|b)*|((acd)e)*)*");
+        Tree tree = parser.parser("A(B|C)");
         log.info(Tree.drawTree(tree));
         log.info(tree.toString());
         Tree ssnfTree = ssnf(SerializationUtils.clone(tree));
@@ -180,6 +218,9 @@ public class CController implements CommandLineRunner {
         Tree idempotencyTree = normalizeIdempotency(SerializationUtils.clone(commutativityTree));
         log.info(Tree.drawTree(idempotencyTree));
         log.info(idempotencyTree.toString());
+        Tree dstrTree = dstrTree(idempotencyTree);
+        log.info(Tree.drawTree(dstrTree));
+        log.info(dstrTree.toString());
     }
 
     public Tree ssnf(Tree tree) {

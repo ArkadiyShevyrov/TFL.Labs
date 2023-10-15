@@ -1,7 +1,6 @@
-package ru.bmstu.iu9.tfl_lab_2.service;
+package ru.bmstu.iu9.tfl_lab_2.utils;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import lombok.experimental.UtilityClass;
 import ru.bmstu.iu9.tfl_lab_2.model.parser.Tree;
 import ru.bmstu.iu9.tfl_lab_2.model.parser.lexeme.IterLexeme;
 import ru.bmstu.iu9.tfl_lab_2.model.parser.lexeme.Lexeme;
@@ -9,13 +8,13 @@ import ru.bmstu.iu9.tfl_lab_2.model.parser.syntax.SyntaxRegex;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
-@Service
+@UtilityClass
 public class Parser {
 
     public Tree parser(String data) {
         return syntacticalAnalyze(lexicalAnalyze(data));
     }
+
     private IterLexeme lexicalAnalyze(String date) {
         List<Lexeme> lexemes = new ArrayList<>();
         for (int i = 0; i < date.length(); i++) {

@@ -34,6 +34,14 @@ public class CController implements CommandLineRunner {
                 root = leftChild;
             }
         }
+        if (root.getType() == Tree.Type.CONCAT) {
+            while (root.getLeft() != null && root.getLeft().getType() == Tree.Type.CONCAT) {
+                Tree leftChild = root.getLeft();
+                root.setLeft(leftChild.getRight());
+                leftChild.setRight(root);
+                root = leftChild;
+            }
+        }
         root.setLeft(normalizeAssociativity(root.getLeft()));
         root.setRight(normalizeAssociativity(root.getRight()));
         return root;
@@ -48,12 +56,15 @@ public class CController implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Tree tree = parser.parser("((abc)*|(cde)*)*");
+        Tree tree = parser.parser("(((a|b)|c)*|((cd)e)*)*");
         Tree.drawTree(tree);
+        log.info(tree.toString());
         Tree ssnfTree = ssnf(SerializationUtils.clone(tree));
         Tree.drawTree(ssnfTree);
+        log.info(ssnfTree.toString());
         Tree normTree = normalizeAssociativity(SerializationUtils.clone(ssnfTree));
         Tree.drawTree(normTree);
+        log.info(normTree.toString());
     }
 
     public Tree ssnf(Tree tree) {

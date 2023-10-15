@@ -63,7 +63,7 @@ public class Tree implements Serializable {
                 return value;
             }
             case ASTERISK -> {
-                return left + "*";
+                return "("+left+")" + "*";
             }
             case GROUP -> {
                 return "(" + left + ")";

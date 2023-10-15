@@ -205,8 +205,8 @@ public class CController implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-//        Tree tree = parser.parser("(((a|c|c|c|a|b|a)|b)*|((acd)e)*)*");
-        Tree tree = parser.parser("(A|B)C)");
+        Tree tree = parser.parser("(((a|c|(a|b)c|c|(a|b)c|c|a(b|c)|a|b|a)|b)*|((acd)e)*)*");
+//        Tree tree = parser.parser("(A|B)C)");
         log.info(Tree.drawTree(tree));
         log.info(tree.toString());
         Tree ssnfTree = ssnf(SerializationUtils.clone(tree));
@@ -224,6 +224,9 @@ public class CController implements CommandLineRunner {
         Tree dstrTree = dstrTree(idempotencyTree);
         log.info(Tree.drawTree(dstrTree));
         log.info(dstrTree.toString());
+        Tree commutativity = normalizeCommutativity(idempotencyTree);
+        log.info(Tree.drawTree(commutativity));
+        log.info(commutativity.toString());
     }
 
     public Tree ssnf(Tree tree) {

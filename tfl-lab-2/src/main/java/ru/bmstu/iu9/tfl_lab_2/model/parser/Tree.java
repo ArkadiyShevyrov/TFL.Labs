@@ -17,10 +17,6 @@ public class Tree implements Serializable {
     private Tree left;
     private Tree right;
 
-    public Tree(Type type) {
-        this.type = type;
-    }
-
     public Tree(Type type, Tree left) {
         this.type = type;
         this.left = left;
@@ -44,8 +40,8 @@ public class Tree implements Serializable {
     private static String printTree(Tree root, String prefix, boolean isLeft) {
         StringBuilder builder = new StringBuilder();
         if (root != null) {
-            builder.append(prefix + (isLeft ? "├── " : "└── ") + root.getType() +
-                    (root.getValue() != null ? " " + root.getValue() : "")).append("\n");
+            builder.append(prefix).append(isLeft ? "├── " : "└── ").append(root.getType())
+                    .append(root.getValue() != null ? " " + root.getValue() : "").append("\n");
             String s1 = printTree(root.left, prefix + (isLeft ? "│   " : "    "), root.right != null);
             String s2 = printTree(root.right, prefix + (isLeft ? "│   " : "    "), false);
             builder.append(s1).append(s2);
@@ -57,7 +53,7 @@ public class Tree implements Serializable {
     public String toString() {
         switch (type) {
             case OR -> {
-                return  left + "|" + right;
+                return left + "|" + right;
             }
             case CONCAT -> {
                 if (left.getType() == Type.OR &&
@@ -85,34 +81,6 @@ public class Tree implements Serializable {
 
         }
     }
-
-//    public static Tree applyDSTR(Tree root) {
-//        switch (root.type) {
-//            case SYMBOL -> {
-//                return root;
-//            }
-//            case CONCAT -> {
-//                // Применяем левое распределение (DSTRL)
-//                Tree newLeft = new Tree(Type.CONCAT, applyDSTR(root.left), applyDSTR(root.right));
-//                Tree newRight = applyDSTR(root.right);
-//                return new Tree(Type.CONCAT, newLeft, newRight);
-//            }
-//            case OR -> {
-//                // Применяем правое распределение (DSTRR)
-//                Tree newLeft = applyDSTR(root.left);
-//                Tree newRight = applyDSTR(root.right);
-//                return new Tree(Type.OR, newLeft, newRight);
-//            }
-//            case ASTERISK -> {
-//                // Применяем правое распределение (DSTRR)
-//                Tree newChild = applyDSTR(root.left);
-//                return new Tree(Type.ASTERISK, newChild);
-//            }
-//            default -> {
-//                return null;
-//            }
-//        }
-//    }
 
     public enum Type {
         OR,

@@ -72,9 +72,6 @@ public class Tree implements Serializable {
             case ASTERISK -> {
                 return "(" + left + ")" + "*";
             }
-            case GROUP -> {
-                return "(" + left + ")";
-            }
             default -> {
                 return "";
             }
@@ -86,7 +83,6 @@ public class Tree implements Serializable {
         OR,
         CONCAT,
         ASTERISK,
-        SYMBOL,
-        GROUP;
+        SYMBOL
     }
 }

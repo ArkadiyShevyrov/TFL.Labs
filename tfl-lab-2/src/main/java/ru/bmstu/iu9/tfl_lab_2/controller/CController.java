@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bmstu.iu9.tfl_lab_2.model.parser.Tree;
 import ru.bmstu.iu9.tfl_lab_2.service.Parser;
+import ru.bmstu.iu9.tfl_lab_2.utils.SSNF;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -209,7 +210,7 @@ public class CController implements CommandLineRunner {
 //        Tree tree = parser.parser("(A|B)C)");
         log.info(Tree.drawTree(tree));
         log.info(tree.toString());
-        Tree ssnfTree = ssnf(SerializationUtils.clone(tree));
+        Tree ssnfTree = SSNF.ssnf(SerializationUtils.clone(tree));
         log.info(Tree.drawTree(ssnfTree));
         log.info(ssnfTree.toString());
         Tree associativityTree = normalizeAssociativity(SerializationUtils.clone(ssnfTree));
@@ -227,55 +228,5 @@ public class CController implements CommandLineRunner {
         Tree commutativity = normalizeCommutativity(idempotencyTree);
         log.info(Tree.drawTree(commutativity));
         log.info(commutativity.toString());
-    }
-
-    public Tree ssnf(Tree tree) {
-        switch (tree.getType()) {
-            case SYMBOL -> {
-                return tree;
-            }
-            case OR -> {
-                return new Tree(Tree.Type.OR, ssnf(tree.getLeft()),
-                        ssnf(tree.getRight()));
-            }
-            case CONCAT -> {
-                return new Tree(Tree.Type.CONCAT, ssnf(tree.getLeft()), ssnf(tree.getRight()));
-            }
-            case ASTERISK -> {
-                return new Tree(Tree.Type.ASTERISK, ss(tree.getLeft()));
-            }
-            case GROUP -> {
-                return new Tree(Tree.Type.GROUP, ssnf(tree.getLeft()));
-            }
-            default -> throw new RuntimeException();
-        }
-    }
-
-    public Tree ss(Tree tree) {
-        switch (tree.getType()) {
-            case SYMBOL -> {
-                return tree;
-            }
-            case OR -> {
-                return new Tree(Tree.Type.OR, ss(tree.getLeft()), ss(tree.getRight()));
-            }
-            case CONCAT -> {
-                Tree treeChildLeft = tree.getLeft();
-                Tree treeChildRight = tree.getRight();
-                if (treeChildLeft.getType() == Tree.Type.ASTERISK
-                        && treeChildRight.getType() == Tree.Type.ASTERISK) {
-                    return new Tree(Tree.Type.OR, ss(tree.getLeft()), ss(tree.getRight()));
-                }
-                return new Tree(Tree.Type.CONCAT, ssnf(tree.getLeft()),
-                        ssnf(tree.getRight()));
-            }
-            case ASTERISK -> {
-                return ss(tree.getLeft());
-            }
-            case GROUP -> {
-                return new Tree(Tree.Type.GROUP, ss(tree.getLeft()));
-            }
-            default -> throw new RuntimeException();
-        }
     }
 }

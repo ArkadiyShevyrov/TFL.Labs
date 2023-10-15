@@ -17,7 +17,7 @@ public class SyntaxConcat implements Syntax {
                 (currentLexeme.getType() == Lexeme.LexemeType.OPEN_BRACKET ||
                         currentLexeme.getType() == Lexeme.LexemeType.SYMBOL)) {
             Tree parseTwo = new SyntaxConcat().parse(iterLexeme);
-            return new Tree(Tree.Type.CONCAT, List.of(parseOne, parseTwo));
+            return new Tree(Tree.Type.CONCAT, parseOne, parseTwo);
         }
         return parseOne;
     }

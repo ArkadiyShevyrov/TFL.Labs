@@ -23,7 +23,7 @@ public class SyntaxGroup implements Syntax {
                 throw new RuntimeException();
             }
             iterLexeme.next();
-            return new Tree(Tree.Type.GROUP, List.of(parseOne));
+            return parseOne;
         }
         throw new RuntimeException();
     }

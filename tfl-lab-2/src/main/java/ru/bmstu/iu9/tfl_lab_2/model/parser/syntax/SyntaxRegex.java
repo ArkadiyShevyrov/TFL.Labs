@@ -16,7 +16,7 @@ public class SyntaxRegex implements Syntax {
                 currentLexeme.getType() == Lexeme.LexemeType.OR) {
             iterLexeme.next();
             Tree parseTwo = new SyntaxRegex().parse(iterLexeme);
-            return new Tree(Tree.Type.OR, List.of(parseOne, parseTwo));
+            return new Tree(Tree.Type.OR, parseOne, parseTwo);
         }
         return parseOne;
     }

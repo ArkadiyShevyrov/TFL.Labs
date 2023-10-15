@@ -12,11 +12,11 @@ public class SyntaxIter implements Syntax {
         Tree parseOne = new SyntaxGroup().parse(iterLexeme);
         if (iterLexeme.getCurrent() != null &&
                 iterLexeme.getCurrent().getType() == Lexeme.LexemeType.ITERATION) {
-            Tree tree = new Tree(Tree.Type.ASTERISK, List.of(parseOne));
+            Tree tree = new Tree(Tree.Type.ASTERISK, parseOne);
             while (iterLexeme.getCurrent() != null &&
                     iterLexeme.getCurrent().getType() == Lexeme.LexemeType.ITERATION) {
                 iterLexeme.next();
-                tree = new Tree(Tree.Type.ASTERISK, List.of(tree));
+                tree = new Tree(Tree.Type.ASTERISK, tree);
             }
             return tree;
         }

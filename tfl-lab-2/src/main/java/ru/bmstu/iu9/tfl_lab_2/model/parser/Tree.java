@@ -2,19 +2,34 @@ package ru.bmstu.iu9.tfl_lab_2.model.parser;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
-import ru.bmstu.iu9.tfl_lab_2.model.parser.lexeme.Lexeme;
-import java.util.List;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import java.io.Serializable;
 
+@Slf4j
 @Getter
-public class Tree {
+@Setter
+@AllArgsConstructor
+public class Tree implements Serializable {
     private final Type type;
     private String value;
-    private List<Tree> children;
 
-    public Tree(Type type, List<Tree> children) {
+    private Tree left;
+    private Tree right;
+
+    public Tree(Type type) {
         this.type = type;
-        this.children = children;
+    }
+
+    public Tree(Type type, Tree left) {
+        this.type = type;
+        this.left = left;
+    }
+
+    public Tree(Type type, Tree left, Tree right) {
+        this.type = type;
+        this.left = left;
+        this.right = right;
     }
 
     public Tree(Type type, String value) {
@@ -22,35 +37,49 @@ public class Tree {
         this.value = value;
     }
 
-    public enum Type {
-        OR,
-        CONCAT,
-        ASTERISK,
-        SYMBOL,
-        GROUP,
+    public static void drawTree(Tree root) {
+        printTree(root, "", true);
+    }
+
+    private static void printTree(Tree root, String prefix, boolean isLeft) {
+        if (root != null) {
+            log.info(prefix + (isLeft ? "├── " : "└── ") + root.getType() +
+                    (root.getValue() != null ? " " + root.getValue() : ""));
+            printTree(root.left, prefix + (isLeft ? "│   " : "    "), true);
+            printTree(root.right, prefix + (isLeft ? "│   " : "    "), false);
+        }
     }
 
     @Override
     public String toString() {
         switch (type) {
             case OR -> {
-                return children.get(0) + "|" + children.get(1);
+                return left + "|" + right;
             }
             case CONCAT -> {
-                return children.get(0).toString()  + children.get(1);
+                return left + "" + right;
             }
             case SYMBOL -> {
                 return value;
             }
             case ASTERISK -> {
-                return children.get(0) + "*";
+                return left + "*";
             }
             case GROUP -> {
-                return "(" + children.get(0) + ")";
+                return "(" + left + ")";
             }
             default -> {
                 return "";
             }
+
         }
+    }
+
+    public enum Type {
+        OR,
+        CONCAT,
+        ASTERISK,
+        SYMBOL,
+        GROUP;
     }
 }

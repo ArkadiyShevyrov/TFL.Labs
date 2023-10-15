@@ -24,6 +24,49 @@ public class CController implements CommandLineRunner {
 
     private final Parser parser;
 
+    //TODO проверить что в этом методе нет багов
+    public static Tree normalizeIdempotency(Tree root) {
+        if (root == null) {
+            return null;
+        }
+        while (root.getType() == Tree.Type.OR && root.getRight().getType() == Tree.Type.OR) {
+            Tree left = root.getLeft();
+            Tree right = root.getRight();
+            Tree rightLeft = right.getLeft();
+            Tree rightRight = right.getRight();
+            if (left.toString().equals(rightLeft.toString())) {
+                root = right;
+            } else if (left.toString().equals(rightRight.toString())) {
+                root = right;
+            } else {
+                break;
+            }
+        }
+        while (root.getType() == Tree.Type.OR && root.getLeft().getType() == Tree.Type.OR) {
+            Tree left = root.getLeft();
+            Tree right = root.getRight();
+            Tree leftLeft = left.getLeft();
+            Tree leftRight = left.getRight();
+            if (right.toString().equals(leftLeft.toString())) {
+                root = left;
+            } else if (right.toString().equals(leftRight.toString())) {
+                root = left;
+            } else {
+                break;
+            }
+        }
+        if (root.getType() == Tree.Type.OR) {
+            Tree left = root.getLeft();
+            Tree right = root.getRight();
+            if (left.toString().equals(right.toString())) {
+                root = right;
+            }
+        }
+        root.setLeft(normalizeIdempotency(root.getLeft()));
+        root.setRight(normalizeIdempotency(root.getRight()));
+        return root;
+    }
+
     public static Tree normalizeAssociativity(Tree root) {
         if (root == null) {
             return null;
@@ -98,9 +141,9 @@ public class CController implements CommandLineRunner {
         Tree root = new Tree(Tree.Type.OR, operands.get(0));
         Tree current = root;
 
-        for (int i = 1; i < operands.size()-1; i++) {
+        for (int i = 1; i < operands.size() - 1; i++) {
             if (i == operands.size() - 2) {
-                Tree temp = new Tree(Tree.Type.OR, operands.get(i), operands.get(i+1));
+                Tree temp = new Tree(Tree.Type.OR, operands.get(i), operands.get(i + 1));
                 current.setRight(temp);
                 current = temp;
                 continue;
@@ -122,7 +165,7 @@ public class CController implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Tree tree = parser.parser("(((a|c|a|b|a)|b)*|((acd)e)*)*");
+        Tree tree = parser.parser("(((a|c|c|c|a|b|a)|b)*|((acd)e)*)*");
         log.info(Tree.drawTree(tree));
         log.info(tree.toString());
         Tree ssnfTree = ssnf(SerializationUtils.clone(tree));
@@ -134,6 +177,9 @@ public class CController implements CommandLineRunner {
         Tree commutativityTree = normalizeCommutativity(SerializationUtils.clone(associativityTree));
         log.info(Tree.drawTree(commutativityTree));
         log.info(commutativityTree.toString());
+        Tree idempotencyTree = normalizeIdempotency(SerializationUtils.clone(commutativityTree));
+        log.info(Tree.drawTree(idempotencyTree));
+        log.info(idempotencyTree.toString());
     }
 
     public Tree ssnf(Tree tree) {

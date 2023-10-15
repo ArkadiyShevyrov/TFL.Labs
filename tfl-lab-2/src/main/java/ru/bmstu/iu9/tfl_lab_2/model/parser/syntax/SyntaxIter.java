@@ -13,9 +13,9 @@ public class SyntaxIter implements Syntax {
         if (iterLexeme.getCurrent() != null &&
                 iterLexeme.getCurrent().getType() == Lexeme.LexemeType.ITERATION) {
             Tree tree = new Tree(Tree.Type.ASTERISK, parseOne);
+            iterLexeme.next();
             while (iterLexeme.getCurrent() != null &&
                     iterLexeme.getCurrent().getType() == Lexeme.LexemeType.ITERATION) {
-                iterLexeme.next();
                 tree = new Tree(Tree.Type.ASTERISK, tree);
             }
             return tree;

@@ -137,6 +137,9 @@ public class CController implements CommandLineRunner {
         if (operands.isEmpty()) {
             return null;
         }
+        if (operands.size() == 2) {
+            return new Tree(Tree.Type.OR, operands.get(0), operands.get(1));
+        }
 
         Tree root = new Tree(Tree.Type.OR, operands.get(0));
         Tree current = root;
@@ -203,7 +206,7 @@ public class CController implements CommandLineRunner {
     @Override
     public void run(String... args) {
 //        Tree tree = parser.parser("(((a|c|c|c|a|b|a)|b)*|((acd)e)*)*");
-        Tree tree = parser.parser("A(B|C)");
+        Tree tree = parser.parser("(A|B)C)");
         log.info(Tree.drawTree(tree));
         log.info(tree.toString());
         Tree ssnfTree = ssnf(SerializationUtils.clone(tree));

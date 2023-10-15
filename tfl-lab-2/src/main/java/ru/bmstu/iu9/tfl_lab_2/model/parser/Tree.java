@@ -57,9 +57,17 @@ public class Tree implements Serializable {
     public String toString() {
         switch (type) {
             case OR -> {
-                return "("+left + "|" + right +")";
+                return  left + "|" + right;
             }
             case CONCAT -> {
+                if (left.getType() == Type.OR &&
+                        right.getType() != Type.OR) {
+                    return "(" + left + ")" + right;
+                }
+                if (right.getType() == Type.OR &&
+                        left.getType() != Type.OR) {
+                    return left + "(" + right + ")";
+                }
                 return left + "" + right;
             }
             case SYMBOL -> {

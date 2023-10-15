@@ -1,6 +1,7 @@
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Slf4j
 class ApplicationTests {
     private final OptimizationService optimizationService = new OptimizationService();
 
@@ -24,13 +26,14 @@ class ApplicationTests {
         list.add(new TestA("((abc)*|(cde)*)*", "(abc|cde)*"));
         list.add(new TestA("(abc(cde)*)*", "(abc(cde)*)*"));
         list.add(new TestA("((abc)*(cde)*)*", "(abc|cde)*"));
-//        list.add(new TestA("", ""));
-//        list.add(new TestA("", ""));
-//        list.add(new TestA("", ""));
+        list.add(new TestA("(((a|c|(a|b)c|c|(a|b)c|c|a(b|c)|a|b|a)|b)*|((acd)e)*)*", "(a|ab|ac|ac|acde|b|bc|c)*"));
+        list.add(new TestA("(a|b)c", "ac|bc"));
+        list.add(new TestA("a(b|c)", "ab|ac"));
 //        list.add(new TestA("", ""));
 //        list.add(new TestA("", ""));
         for (TestA testA : list) {
-            assertEquals(optimizationService.optimization(testA.input), testA.expected);
+            String optimization = optimizationService.optimization(testA.input);
+            assertEquals(optimization, testA.expected);
         }
     }
 

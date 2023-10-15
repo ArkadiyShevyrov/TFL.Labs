@@ -13,8 +13,6 @@ import ru.bmstu.iu9.tfl_lab_2.utils.SSNF;
 @Service
 public class OptimizationService {
     public String optimization(String regex) {
-//        Tree tree = Parser.parser("(((a|c|(a|b)c|c|(a|b)c|c|a(b|c)|a|b|a)|b)*|((acd)e)*)*");
-//                Tree tree = parser.parser("(A|B)C)");
         Tree tree = Parser.parser(regex);
         log.info(Tree.drawTree(tree));
         log.info(tree.toString());
@@ -30,10 +28,10 @@ public class OptimizationService {
         Tree idempotencyTree = ACI.normalizeIdempotency(SerializationUtils.clone(commutativityTree));
         log.info(Tree.drawTree(idempotencyTree));
         log.info(idempotencyTree.toString());
-        Tree dstrTree = DSTR.dstrTree(idempotencyTree);
+        Tree dstrTree = DSTR.dstrTree(SerializationUtils.clone(idempotencyTree));
         log.info(Tree.drawTree(dstrTree));
         log.info(dstrTree.toString());
-        Tree commutativity = ACI.normalizeCommutativity(idempotencyTree);
+        Tree commutativity = ACI.normalizeCommutativity(SerializationUtils.clone(dstrTree));
         log.info(Tree.drawTree(commutativity));
         log.info(commutativity.toString());
         return commutativity.toString();

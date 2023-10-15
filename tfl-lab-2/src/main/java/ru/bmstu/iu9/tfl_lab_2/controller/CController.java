@@ -83,7 +83,7 @@ public class CController implements CommandLineRunner {
             if (root.getRight().getType() != Tree.Type.OR) {
                 operands.add(root.getRight());
             } else {
-                operands.addAll(collectOperands(root.getLeft()));
+                operands.addAll(collectOperands(root.getRight()));
 
             }
         }
@@ -122,15 +122,18 @@ public class CController implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Tree tree = parser.parser("(((c|a)|b)*|((acd)e)*)*");
-        Tree.drawTree(tree);
+        Tree tree = parser.parser("(((a|c|a|b|a)|b)*|((acd)e)*)*");
+        log.info(Tree.drawTree(tree));
         log.info(tree.toString());
         Tree ssnfTree = ssnf(SerializationUtils.clone(tree));
-        Tree.drawTree(ssnfTree);
+        log.info(Tree.drawTree(ssnfTree));
         log.info(ssnfTree.toString());
-        Tree normTree = normalizeCommutativity(SerializationUtils.clone(ssnfTree));
-        Tree.drawTree(normTree);
-        log.info(normTree.toString());
+        Tree associativityTree = normalizeAssociativity(SerializationUtils.clone(ssnfTree));
+        log.info(Tree.drawTree(associativityTree));
+        log.info(associativityTree.toString());
+        Tree commutativityTree = normalizeCommutativity(SerializationUtils.clone(associativityTree));
+        log.info(Tree.drawTree(commutativityTree));
+        log.info(commutativityTree.toString());
     }
 
     public Tree ssnf(Tree tree) {

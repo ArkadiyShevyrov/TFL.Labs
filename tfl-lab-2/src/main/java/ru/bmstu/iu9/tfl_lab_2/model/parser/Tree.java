@@ -37,17 +37,20 @@ public class Tree implements Serializable {
         this.value = value;
     }
 
-    public static void drawTree(Tree root) {
-        printTree(root, "", false);
+    public static String drawTree(Tree root) {
+        return "\n" +printTree(root, "", false);
     }
 
-    private static void printTree(Tree root, String prefix, boolean isLeft) {
+    private static String printTree(Tree root, String prefix, boolean isLeft) {
+        StringBuilder builder = new StringBuilder();
         if (root != null) {
-            log.info(prefix + (isLeft ? "├── " : "└── ") + root.getType() +
-                    (root.getValue() != null ? " " + root.getValue() : ""));
-            printTree(root.left, prefix + (isLeft ? "│   " : "    "), root.right != null);
-            printTree(root.right, prefix + (isLeft ? "│   " : "    "), false);
+            builder.append(prefix + (isLeft ? "├── " : "└── ") + root.getType() +
+                    (root.getValue() != null ? " " + root.getValue() : "")).append("\n");
+            String s1 = printTree(root.left, prefix + (isLeft ? "│   " : "    "), root.right != null);
+            String s2 = printTree(root.right, prefix + (isLeft ? "│   " : "    "), false);
+            builder.append(s1).append(s2);
         }
+        return builder.toString();
     }
 
     @Override
@@ -63,7 +66,7 @@ public class Tree implements Serializable {
                 return value;
             }
             case ASTERISK -> {
-                return "("+left+")" + "*";
+                return "(" + left + ")" + "*";
             }
             case GROUP -> {
                 return "(" + left + ")";

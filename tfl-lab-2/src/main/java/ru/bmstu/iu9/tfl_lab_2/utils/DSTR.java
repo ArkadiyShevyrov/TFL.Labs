@@ -33,6 +33,22 @@ public class DSTR {
     }
 
     private static Tree dstrl(Tree root) {
+        while (root.getType() == Tree.Type.OR &&
+                root.getLeft().getType() == Tree.Type.CONCAT &&
+                root.getRight().getType() == Tree.Type.OR &&
+                root.getRight().getLeft().getType() == Tree.Type.CONCAT &&
+                root.getLeft().getLeft().toString().equals(root.getRight().getLeft().getLeft().toString())) {
+            root = new Tree(
+                    Tree.Type.OR,
+                    new Tree(
+                            Tree.Type.CONCAT,
+                            root.getLeft().getLeft(),
+                            new Tree(
+                                    Tree.Type.OR,
+                                    root.getLeft().getRight(),
+                                    root.getRight().getLeft().getRight())),
+                    root.getRight().getRight());
+        }
         if (root.getType() == Tree.Type.OR &&
                 root.getLeft().getType() == Tree.Type.CONCAT &&
                 root.getRight().getType() == Tree.Type.CONCAT &&
@@ -44,7 +60,7 @@ public class DSTR {
                             Tree.Type.OR,
                             root.getLeft().getRight(),
                             root.getRight().getRight())
-                    );
+            );
         }
         return root;
     }

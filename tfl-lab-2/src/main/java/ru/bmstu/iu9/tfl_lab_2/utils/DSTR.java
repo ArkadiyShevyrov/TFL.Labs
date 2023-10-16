@@ -13,6 +13,8 @@ public class DSTR {
         root = dstrr(root);
         root.setLeft(dstrTree(root.getLeft()));
         root.setRight(dstrTree(root.getRight()));
+        root = dstrl(root);
+        root = dstrr(root);
         return root;
     }
 
@@ -40,14 +42,14 @@ public class DSTR {
                 root.getLeft().getLeft().toString().equals(root.getRight().getLeft().getLeft().toString())) {
             root = new Tree(
                     Tree.Type.OR,
+                    root.getRight().getRight(),
                     new Tree(
                             Tree.Type.CONCAT,
                             root.getLeft().getLeft(),
                             new Tree(
                                     Tree.Type.OR,
                                     root.getLeft().getRight(),
-                                    root.getRight().getLeft().getRight())),
-                    root.getRight().getRight());
+                                    root.getRight().getLeft().getRight())));
         }
         if (root.getType() == Tree.Type.OR &&
                 root.getLeft().getType() == Tree.Type.CONCAT &&

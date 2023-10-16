@@ -10,11 +10,11 @@ public class DSTR {
             return null;
         }
         root = dstrl(root);
-        root = dstrr(root);
+//        root = dstrr(root);
         root.setLeft(dstrTree(root.getLeft()));
         root.setRight(dstrTree(root.getRight()));
-        root = dstrl(root);
-        root = dstrr(root);
+//        root = dstrl(root);
+//        root = dstrr(root);
         return root;
     }
 

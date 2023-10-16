@@ -17,35 +17,33 @@ public class DSTR {
     }
 
     private static Tree dstrr(Tree root) {
-        if (root.getType() == Tree.Type.CONCAT &&
-                root.getRight().getType() == Tree.Type.OR) {
+        if (root.getType() == Tree.Type.OR &&
+                root.getLeft().getType() == Tree.Type.CONCAT &&
+                root.getRight().getType() == Tree.Type.CONCAT &&
+                root.getLeft().getRight().toString().equals(root.getRight().getRight().toString())) {
             root = new Tree(
-                    Tree.Type.OR,
+                    Tree.Type.CONCAT,
                     new Tree(
-                            Tree.Type.CONCAT,
-                            root.getLeft(),
+                            Tree.Type.OR,
+                            root.getLeft().getLeft(),
                             root.getRight().getLeft()),
-                    new Tree(
-                            Tree.Type.CONCAT,
-                            root.getLeft(),
-                            root.getRight().getRight()));
+                    root.getLeft().getRight());
         }
         return root;
     }
 
     private static Tree dstrl(Tree root) {
-        if (root.getType() == Tree.Type.CONCAT &&
-                root.getLeft().getType() == Tree.Type.OR) {
+        if (root.getType() == Tree.Type.OR &&
+                root.getLeft().getType() == Tree.Type.CONCAT &&
+                root.getRight().getType() == Tree.Type.CONCAT &&
+                root.getLeft().getLeft().toString().equals(root.getRight().getLeft().toString())) {
             root = new Tree(
-                    Tree.Type.OR,
+                    Tree.Type.CONCAT,
                     new Tree(
-                            Tree.Type.CONCAT,
-                            root.getLeft().getLeft(),
-                            root.getRight()),
-                    new Tree(
-                            Tree.Type.CONCAT,
+                            Tree.Type.OR,
                             root.getLeft().getRight(),
-                            root.getRight()));
+                            root.getRight().getRight()),
+                    root.getLeft().getLeft());
         }
         return root;
     }

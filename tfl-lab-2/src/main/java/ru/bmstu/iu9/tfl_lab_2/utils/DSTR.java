@@ -39,11 +39,12 @@ public class DSTR {
                 root.getLeft().getLeft().toString().equals(root.getRight().getLeft().toString())) {
             root = new Tree(
                     Tree.Type.CONCAT,
+                    root.getLeft().getLeft(),
                     new Tree(
                             Tree.Type.OR,
                             root.getLeft().getRight(),
-                            root.getRight().getRight()),
-                    root.getLeft().getLeft());
+                            root.getRight().getRight())
+                    );
         }
         return root;
     }

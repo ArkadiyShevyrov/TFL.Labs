@@ -70,6 +70,9 @@ public class Tree implements Serializable {
                 return value;
             }
             case ASTERISK -> {
+                if (left.getType() == Type.SYMBOL) {
+                    return left + "*";
+                }
                 return "(" + left + ")" + "*";
             }
             default -> {

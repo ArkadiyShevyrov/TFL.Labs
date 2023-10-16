@@ -14,17 +14,19 @@ class ApplicationTests {
     @Test
     void test1() {
         List<TestA> list = new ArrayList<>();
-//        list.add(new TestA("(abc)***", "(abc)*"));
-//        list.add(new TestA("((abc)*|(cde)*)*", "(abc|cde)*"));
-//        list.add(new TestA("(abc(cde)*)*", "(abc(cde)*)*"));
-//        list.add(new TestA("((abc)*(cde)*)*", "(abc|cde)*"));
+        list.add(new TestA("(abc)***", "(abc)*"));
+        list.add(new TestA("((abc)*|(cde)*)*", "(abc|cde)*"));
+        list.add(new TestA("(abc(cde)*)*", "(abc(cde)*)*"));
+        list.add(new TestA("((abc)*(cde)*)*", "(abc|cde)*"));
 //        list.add(new TestA("(((a|c|(a|b)c|c|(a|b)c|c|a(b|c)|a|b|a)|b)*|((acd)e)*)*", "(a|ab|ac|ac|acde|b|bc|c)*"));
-        list.add(new TestA("ac|bc", "(a|b)c"));
-//        list.add(new TestA("(a|b)c", "ac|bc"));
-//        list.add(new TestA("a(b|c)", "ab|ac"));
+        list.add(new TestA("ac|bc","(a|b)c"));
+        list.add(new TestA("ab|ac","a(b|c)"));
+        list.add(new TestA("a*a|a*c", "a*(a|c)"));
+        list.add(new TestA("a*a|b|a*c", "a*(a|c)|b"));
+
         for (TestA testA : list) {
             String optimization = optimizationService.optimization(testA.input);
-            assertEquals(optimization, testA.expected);
+            assertEquals(testA.expected, optimization);
         }
     }
 

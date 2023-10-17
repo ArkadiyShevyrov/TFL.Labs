@@ -18,6 +18,26 @@ public class DSTR {
     }
 
     private static Tree dstrr(Tree root) {
+        while (root.getType() == Tree.Type.OR &&
+                root.getLeft().getType() == Tree.Type.CONCAT &&
+                root.getRight().getType() == Tree.Type.OR &&
+                root.getRight().getLeft().getType() == Tree.Type.CONCAT &&
+                getLastConcat(root.getLeft()).toString()
+                        .equals(getLastConcat(root.getRight().getLeft()).toString())) {
+            root = normalOr(new Tree(
+                    Tree.Type.OR,
+
+                    new Tree(
+                            Tree.Type.CONCAT,
+                            normalOr(new Tree(
+                                    Tree.Type.OR,
+                                    getConcatNotLast(root.getLeft()),
+                                    getConcatNotLast(root.getRight().getLeft()))),
+                            getLastConcat(root.getLeft())),
+                    root.getRight().getRight()
+            ));
+
+        }
         if (root.getType() == Tree.Type.OR &&
                 root.getLeft().getType() == Tree.Type.CONCAT &&
                 root.getRight().getType() == Tree.Type.CONCAT &&
@@ -33,7 +53,7 @@ public class DSTR {
         return root;
     }
 
-    public Tree getLastConcat(Tree root) {
+    private Tree getLastConcat(Tree root) {
         Tree current = root;
         while (current.getType() == Tree.Type.CONCAT) {
             current = current.getRight();
@@ -41,7 +61,10 @@ public class DSTR {
         return current;
     }
 
-    public Tree getConcatNotLast(Tree root) {
+    private static Tree getConcatNotLast(Tree root) {
+        if (root.getType() == Tree.Type.CONCAT && root.getRight().getType() != Tree.Type.CONCAT) {
+            return root.getLeft();
+        }
         Tree current = root;
         Tree newTree = new Tree(Tree.Type.CONCAT, root.getLeft());
         Tree currentNew = newTree;

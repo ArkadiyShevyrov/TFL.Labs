@@ -31,9 +31,6 @@ public class OptimizationService {
         Tree dstrTree = DSTR.dstrTree(SerializationUtils.clone(idempotencyTree));
         log.info(Tree.drawTree(dstrTree));
         log.info(dstrTree.toString());
-        Tree commutativity = ACI.normalizeCommutativity(SerializationUtils.clone(dstrTree));
-        log.info(Tree.drawTree(commutativity));
-        log.info(commutativity.toString());
-        return commutativity.toString();
+        return dstrTree.toString();
     }
 }

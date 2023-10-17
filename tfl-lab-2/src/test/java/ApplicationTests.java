@@ -25,8 +25,9 @@ class ApplicationTests {
 //        list.add(new TestA("(((c|a(b|c)|b|a)|b)*|((acd)e)*)*", "(a|a(b|c|cde)|b|c)*"));
 //        list.add(new TestA("(acde|a(b|c))","a(b|c|cde)"));
 //        list.add(new TestA("(acde|agz|acdf|ab|ac))","a(b|c|cd(e|f)|gz)"));
-        list.add(new TestA("abcdefghij|abcdefghi|abcdefgh|abcdefg|abcdef|abcde|abcd|abc|ab|a", ""));
-//        list.add(new TestA("abbba|adddda", ""));
+//        list.add(new TestA("abcdefghij|abcdefghi|abcdefgh|abcdefg|abcdef|abcde|abcd|abc|ab|a",
+//                "a|a(b|b(c|c(d|d(e|e(f|f(g|g(h|h(i|ij))))))))"));
+        list.add(new TestA("abbba|adddda", ""));
         for (TestA testA : list) {
             String optimization = optimizationService.optimization(testA.input);
             assertEquals(testA.expected, optimization);

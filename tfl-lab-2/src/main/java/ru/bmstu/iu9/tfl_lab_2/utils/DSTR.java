@@ -26,7 +26,6 @@ public class DSTR {
                         .equals(getLastConcat(root.getRight().getLeft()).toString())) {
             root = normalOr(new Tree(
                     Tree.Type.OR,
-
                     new Tree(
                             Tree.Type.CONCAT,
                             normalOr(new Tree(
@@ -34,9 +33,7 @@ public class DSTR {
                                     getConcatNotLast(root.getLeft()),
                                     getConcatNotLast(root.getRight().getLeft()))),
                             getLastConcat(root.getLeft())),
-                    root.getRight().getRight()
-            ));
-
+                    root.getRight().getRight()));
         }
         if (root.getType() == Tree.Type.OR &&
                 root.getLeft().getType() == Tree.Type.CONCAT &&
@@ -50,6 +47,7 @@ public class DSTR {
                             getConcatNotLast(root.getRight()))),
                     getLastConcat(root.getLeft()));
         }
+        root = ACI.normalizeCommutativity(SerializationUtils.clone(root));
         return root;
     }
 

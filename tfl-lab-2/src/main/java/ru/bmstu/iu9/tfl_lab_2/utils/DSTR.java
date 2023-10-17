@@ -21,16 +21,41 @@ public class DSTR {
         if (root.getType() == Tree.Type.OR &&
                 root.getLeft().getType() == Tree.Type.CONCAT &&
                 root.getRight().getType() == Tree.Type.CONCAT &&
-                root.getLeft().getRight().toString().equals(root.getRight().getRight().toString())) {
+                getLastConcat(root.getLeft()).toString().equals(getLastConcat(root.getRight()).toString())) {
             root = new Tree(
                     Tree.Type.CONCAT,
                     normalOr(new Tree(
                             Tree.Type.OR,
-                            root.getLeft().getLeft(),
-                            root.getRight().getLeft())),
-                    root.getLeft().getRight());
+                            getConcatNotLast(root.getLeft()),
+                            getConcatNotLast(root.getRight()))),
+                    getLastConcat(root.getLeft()));
         }
         return root;
+    }
+
+    public Tree getLastConcat(Tree root) {
+        Tree current = root;
+        while (current.getType() == Tree.Type.CONCAT) {
+            current = current.getRight();
+        }
+        return current;
+    }
+
+    public Tree getConcatNotLast(Tree root) {
+        Tree current = root;
+        Tree newTree = new Tree(Tree.Type.CONCAT, root.getLeft());
+        Tree currentNew = newTree;
+        while (current.getType() == Tree.Type.CONCAT && current.getRight().getType() == Tree.Type.CONCAT) {
+            if (current.getRight().getRight().getType() != Tree.Type.CONCAT) {
+                currentNew.setRight(current.getRight().getLeft());
+                break;
+            }
+            currentNew.setRight(new Tree(Tree.Type.CONCAT, current.getRight().getLeft()));
+            currentNew = currentNew.getRight();
+            current = current.getRight();
+        }
+
+        return newTree;
     }
 
     private static Tree dstrl(Tree root) {

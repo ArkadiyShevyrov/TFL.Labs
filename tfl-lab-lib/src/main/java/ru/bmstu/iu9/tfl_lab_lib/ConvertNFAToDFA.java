@@ -95,7 +95,7 @@ public class ConvertNFAToDFA {
     }
 
     private static Set<State> epsilonClosure(NFA nfa, Set<State> states, Symbol epsilon) {
-        Set<State> closure = new HashSet<>();
+        Set<State> closure = new HashSet<>(states);
         Stack<State> stack = new Stack<>();
         stack.addAll(states);
         while (!stack.isEmpty()) {

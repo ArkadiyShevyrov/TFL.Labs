@@ -10,6 +10,12 @@ public class TransitionFunctionNFA implements TransitionFunction {
 
     private Map<State, Map<Symbol, Set<State>>> tableTransition;
 
+    private Symbol epsilon;
+
+    public TransitionFunctionNFA(Map<State, Map<Symbol, Set<State>>> tableTransition) {
+        this.tableTransition = tableTransition;
+    }
+
     @Override
     public Set<State> transition(State state, Symbol symbol) {
         return tableTransition.get(state).get(symbol);
@@ -22,14 +28,27 @@ public class TransitionFunctionNFA implements TransitionFunction {
             states.add(state);
             return states;
         }
+        Set<State> pStates = advancedTransition(state, symbols.getAllExpectLast());
+        Set<State> rStates = new HashSet<>();
+        for (State pState : pStates) {
+            Set<State> transition = transition(pState, symbols.getLast());
+            rStates.addAll(transition);
+        }
         Set<State> resultStates = new HashSet<>();
-        Set<State> statesAT = advancedTransition(state, symbols.getAllExpectLast());
-        for (State stateAT : statesAT) {
-            Set<State> transition = transition(stateAT, symbols.getLast());
-            if (!transition.isEmpty()) {
-                resultStates.addAll(transition);
-            }
+        for (State rState : rStates) {
+            resultStates.addAll(eClose(rState));
         }
         return resultStates;
+    }
+
+
+    public Set<State> eClose(State state) {
+        Set<State> states = new HashSet<>();
+        states.add(state);
+        Set<State> eStates = transition(state, epsilon);
+        for (State eState : eStates) {
+            states.addAll(eClose(eState));
+        }
+        return states;
     }
 }

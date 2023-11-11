@@ -2,7 +2,6 @@ package ru.bmstu.iu9.tfl_lab_lib.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import java.util.List;
 import java.util.Set;
 
 @Getter

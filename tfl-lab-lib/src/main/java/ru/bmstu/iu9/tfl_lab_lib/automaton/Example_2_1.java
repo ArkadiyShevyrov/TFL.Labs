@@ -1,10 +1,8 @@
 package ru.bmstu.iu9.tfl_lab_lib.automaton;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.model.DFA;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.model.State;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.model.Symbol;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.model.TransitionFunctionDFA;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.model.*;
+import ru.bmstu.iu9.tfl_lab_lib.language.Language;
 import java.util.*;
 
 @Slf4j
@@ -39,13 +37,15 @@ public class Example_2_1 {
         tableTransition.put(state2, map2);
         TransitionFunctionDFA transitionFunctionDFA = new TransitionFunctionDFA(tableTransition);
         DFA dfa = new DFA(states, symbols,state0, finalStates, transitionFunctionDFA);
-        List<Symbol> string1 = new ArrayList<>();
-        string1.add(symbol1);
-        string1.add(symbol1);
-        string1.add(symbol1);
-        string1.add(symbol0);
-        string1.add(symbol1);
-        boolean validString1 = dfa.isValidString(string1);
+        List<Symbol> string = new ArrayList<>();
+        string.add(symbol1);
+        string.add(symbol1);
+        string.add(symbol1);
+        string.add(symbol0);
+        string.add(symbol1);
+        StringSymbols stringSymbols = new StringSymbols(string);
+        Language language = new Language(dfa);
+        boolean validString1 = language.isValidString(stringSymbols);
         log.info(String.valueOf(validString1));
     }
 }

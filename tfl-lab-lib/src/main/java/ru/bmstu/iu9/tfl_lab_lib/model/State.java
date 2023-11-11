@@ -1,13 +1,16 @@
 package ru.bmstu.iu9.tfl_lab_lib.model;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class State {
     private StateValue value;
 

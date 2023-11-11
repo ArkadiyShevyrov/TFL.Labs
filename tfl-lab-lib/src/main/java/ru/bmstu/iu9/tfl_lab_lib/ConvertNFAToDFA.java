@@ -9,81 +9,66 @@ public class ConvertNFAToDFA {
     public static DFA convert(NFA nfa) {
         Set<Symbol> symbols = nfa.getSymbols();
         Symbol epsilon = getEpsilon(symbols);
-        Set<State> initialDFAState = getInitialDFAState(nfa, epsilon);
 
-        Set<Set<State>> dfaStates = new HashSet<>();
-        dfaStates.add(initialDFAState);
+        State initialDFAState = nfa.getInitialState();
 
-        Map<Set<State>, Map<Symbol, Set<State>>> tableTransition = new HashMap<>();
+        Set<State> dfaStates = new HashSet<>();
 
-        Queue<Set<State>> unprocessedDFAStates = new LinkedList<>();
+        Map<State, Map<Symbol, State>> dfaTableTransition = new HashMap<>();
+
+        Queue<State> unprocessedDFAStates = new LinkedList<>();
         unprocessedDFAStates.add(initialDFAState);
         while (!unprocessedDFAStates.isEmpty()) {
-            Set<State> currentDFAState = unprocessedDFAStates.poll();
-            Map<Symbol, Set<State>> map = new HashMap<>();
+            State currentDFAState = unprocessedDFAStates.poll();
+            Map<Symbol, State> map = new HashMap<>();
             for (Symbol symbol : symbols) {
-                Set<State> nextState = new HashSet<>();
-                for (State nfaState : currentDFAState) {
-                    Set<State> transitionState = nfa.getTransitionFunction().transition(nfaState, symbol);
-                    nextState.addAll(epsilonClosure(nfa, transitionState, epsilon));
+                Set<State> subStates = new HashSet<>();
+                if (currentDFAState.getValue().getType() == StateValue.Type.SET_STATE) {
+                    Set<State> subCurrentStates = currentDFAState.getValue().getSetState();
+                    for (State subCurrentState : subCurrentStates) {
+                        Set<State> transitionState = nfa.getTransitionFunction().transition(subCurrentState, symbol);
+                        subStates.addAll(epsilonClosure(nfa, transitionState, epsilon));
+                    }
+                } else {
+                    Set<State> transitionState = nfa.getTransitionFunction().transition(currentDFAState, symbol);
+                    subStates.addAll(epsilonClosure(nfa, transitionState, epsilon));
                 }
+                State nextState = newStateFromSubStates(dfaStates, subStates);
                 if (!dfaStates.contains(nextState)) {
                     unprocessedDFAStates.add(nextState);
                     dfaStates.add(nextState);
                 }
                 map.put(symbol, nextState);
             }
-            tableTransition.put(currentDFAState, map);
+            dfaTableTransition.put(currentDFAState, map);
         }
 
-        Set<Set<State>> dfaFinalStates = new HashSet<>();
-        for (Set<State> dfaState : dfaStates) {
-            for (State nfaState : dfaState) {
-                if (nfa.getFinalStates().contains(nfaState)) {
-                    dfaFinalStates.add(dfaState);
-                    break;
+        Set<State> dfaFinalStates = new HashSet<>();
+        for (State dfaState : dfaStates) {
+            if (dfaState.getValue().getType() == StateValue.Type.SET_STATE) {
+                for (State subState : dfaState.getValue().getSetState()) {
+                    if (nfa.getFinalStates().contains(subState)) {
+                        dfaFinalStates.add(dfaState);
+                        break;
+                    }
                 }
             }
         }
 
-        Map<Set<State>, State> repl = new HashMap<>();
-        for (Set<State> states : dfaStates) {
-            repl.put(states, new State());
-        }
+        TransitionFunctionDFA transitionFunctionDFA = new TransitionFunctionDFA(dfaTableTransition);
 
-        Set<State> convertState = new HashSet<>();
-        for (Set<State> states : dfaStates) {
-            convertState.add(repl.get(states));
-        }
+        return new DFA(dfaStates, symbols, initialDFAState, dfaFinalStates, transitionFunctionDFA);
+    }
 
-        Map<State, Map<Symbol, State>> convertedTableTransition = new HashMap<>();
-        for (Set<State> key : tableTransition.keySet()) {
-            Map<Symbol, Set<State>> symbolSetMap = tableTransition.get(key);
-            Map<Symbol, State> convertedSymbolSetMap = new HashMap<>();
-            for (Symbol keyS : symbolSetMap.keySet()) {
-                Set<State> states = symbolSetMap.get(keyS);
-                convertedSymbolSetMap.put(keyS, repl.get(states));
+    private State newStateFromSubStates(Set<State> states, Set<State> subStates) {
+        for (State state : states) {
+            if (state.getValue().getSetState().equals(subStates)) {
+                return state;
             }
-            convertedTableTransition.put(repl.get(key), convertedSymbolSetMap);
         }
-
-        Set<State> convertFinalStates = new HashSet<>();
-        for (Set<State> states : dfaFinalStates) {
-            convertFinalStates.add(repl.get(states));
-        }
-
-        State convertInitState = nfa.getInitialState();
-
-        TransitionFunctionDFA transitionFunctionDFA = new TransitionFunctionDFA(convertedTableTransition);
-
-        return new DFA(convertState, symbols, convertInitState, convertFinalStates, transitionFunctionDFA);
+        return new State(subStates);
     }
 
-    private static Set<State> getInitialDFAState(NFA nfa, Symbol epsilon) {
-        Set<State> initialNFAState = new HashSet<>();
-        initialNFAState.add(nfa.getInitialState());
-        return epsilonClosure(nfa, initialNFAState, epsilon);
-    }
 
     private static Symbol getEpsilon(Set<Symbol> symbols) {
         for (Symbol symbol : symbols) {

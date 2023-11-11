@@ -1,16 +1,26 @@
 package ru.bmstu.iu9.tfl_lab_lib.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.util.Set;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class State {
-    private String name;
+    private StateValue value;
+
+    public State(String value) {
+        this.value = new StateValue(StateValue.Type.STRING, value);
+    }
+
+    public State(Set<State> setState) {
+        this.value = new StateValue(StateValue.Type.SET_STATE, setState);
+    }
 
     @Override
     public String toString() {
-        return name;
+        return value.toString();
     }
 }

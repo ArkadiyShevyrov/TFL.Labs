@@ -1,10 +1,8 @@
-package ru.bmstu.iu9.tfl_lab_lib.model;
+package ru.bmstu.iu9.tfl_lab_lib.automaton.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Getter
 @AllArgsConstructor

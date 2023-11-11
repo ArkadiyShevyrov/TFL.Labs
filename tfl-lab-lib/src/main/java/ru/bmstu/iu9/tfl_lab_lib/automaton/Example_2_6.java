@@ -1,7 +1,7 @@
-package ru.bmstu.iu9.tfl_lab_lib;
+package ru.bmstu.iu9.tfl_lab_lib.automaton;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.bmstu.iu9.tfl_lab_lib.model.*;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.model.*;
 import java.util.*;
 
 @Slf4j

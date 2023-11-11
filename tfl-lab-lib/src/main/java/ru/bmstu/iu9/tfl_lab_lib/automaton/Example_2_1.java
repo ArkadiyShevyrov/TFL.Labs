@@ -1,10 +1,10 @@
-package ru.bmstu.iu9.tfl_lab_lib;
+package ru.bmstu.iu9.tfl_lab_lib.automaton;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.bmstu.iu9.tfl_lab_lib.model.DFA;
-import ru.bmstu.iu9.tfl_lab_lib.model.State;
-import ru.bmstu.iu9.tfl_lab_lib.model.Symbol;
-import ru.bmstu.iu9.tfl_lab_lib.model.TransitionFunctionDFA;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.model.DFA;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.model.State;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.model.Symbol;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.model.TransitionFunctionDFA;
 import java.util.*;
 
 @Slf4j

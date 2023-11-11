@@ -1,7 +1,7 @@
-package ru.bmstu.iu9.tfl_lab_lib;
+package ru.bmstu.iu9.tfl_lab_lib.automaton;
 
 import lombok.experimental.UtilityClass;
-import ru.bmstu.iu9.tfl_lab_lib.model.*;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.model.*;
 import java.util.*;
 
 @UtilityClass

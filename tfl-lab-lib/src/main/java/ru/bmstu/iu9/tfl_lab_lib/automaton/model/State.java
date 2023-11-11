@@ -1,10 +1,9 @@
-package ru.bmstu.iu9.tfl_lab_lib.model;
+package ru.bmstu.iu9.tfl_lab_lib.automaton.model;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.util.Objects;
 import java.util.Set;
 
 @Getter

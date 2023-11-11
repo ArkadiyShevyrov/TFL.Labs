@@ -8,15 +8,10 @@ import java.util.*;
 public class ConvertNFAToDFA {
     public DFA convert(NFA nfa) {
         Set<Symbol> dfaSymbols = nfa.getSymbols();
-
         State dfaInitialState = getDfaInitialState(nfa);
-
         TransitionFunctionDFA transitionFunctionDFA = getStateMapMap(nfa, dfaSymbols, dfaInitialState);
-
         Set<State> dfaStates = transitionFunctionDFA.getTableTransition().keySet();
-
         Set<State> dfaFinalStates = getDfaFinalStates(nfa, dfaStates);
-
         return new DFA(dfaStates, dfaSymbols, dfaInitialState, dfaFinalStates, transitionFunctionDFA);
     }
 
@@ -106,5 +101,4 @@ public class ConvertNFAToDFA {
         }
         return closure;
     }
-
 }

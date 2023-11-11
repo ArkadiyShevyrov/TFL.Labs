@@ -16,7 +16,7 @@ public class ConvertNFAToDFA {
     }
 
     private State getDfaInitialState(NFA nfa) {
-        return new State(new HashSet<>(Collections.singletonList(nfa.getInitialState())));
+        return new State(nfa.getTransitionFunction().epsilonClosure(nfa.getInitialState()));
     }
 
     private TransitionFunctionDFA getStateMapMap(NFA nfa, Set<Symbol> dfaSymbols, State dfaInitialState) {
@@ -72,32 +72,10 @@ public class ConvertNFAToDFA {
         return new State(subStates);
     }
 
-
-    private Symbol getEpsilon(Set<Symbol> symbols) {
-        for (Symbol symbol : symbols) {
-            if (symbol.getType() == Symbol.Type.EPSILON) {
-                return symbol;
-            }
-        }
-        return null;
-    }
-
     private Set<State> epsilonClosure(NFA nfa, Set<State> states) {
-        Symbol epsilon = getEpsilon(nfa.getSymbols());
         Set<State> closure = new HashSet<>(states);
-        Stack<State> stack = new Stack<>();
-        stack.addAll(states);
-        while (!stack.isEmpty()) {
-            State currentState = stack.pop();
-            Set<State> epsilonTransitions = nfa.getTransitionFunction().transition(currentState, epsilon);
-            if (epsilonTransitions != null) {
-                for (State epsilonState : epsilonTransitions) {
-                    if (!closure.contains(epsilonState)) {
-                        closure.add(epsilonState);
-                        stack.push(epsilonState);
-                    }
-                }
-            }
+        for (State state : states) {
+            closure.addAll(nfa.getTransitionFunction().epsilonClosure(state));
         }
         return closure;
     }

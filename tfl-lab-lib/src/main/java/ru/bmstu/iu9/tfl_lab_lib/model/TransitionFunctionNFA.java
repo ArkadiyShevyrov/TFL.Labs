@@ -36,18 +36,20 @@ public class TransitionFunctionNFA implements TransitionFunction {
         }
         Set<State> resultStates = new HashSet<>();
         for (State rState : rStates) {
-            resultStates.addAll(eClose(rState));
+            resultStates.addAll(epsilonClosure(rState));
         }
         return resultStates;
     }
 
 
-    public Set<State> eClose(State state) {
+    public Set<State> epsilonClosure(State state) {
         Set<State> states = new HashSet<>();
         states.add(state);
         Set<State> eStates = transition(state, epsilon);
-        for (State eState : eStates) {
-            states.addAll(eClose(eState));
+        if (eStates != null) {
+            for (State eState : eStates) {
+                states.addAll(epsilonClosure(eState));
+            }
         }
         return states;
     }

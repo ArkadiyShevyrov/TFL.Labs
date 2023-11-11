@@ -7,21 +7,21 @@ import java.util.*;
 @UtilityClass
 public class ConvertNFAToDFA {
     public static DFA convert(NFA nfa) {
-        Set<Symbol> symbols = nfa.getSymbols();
-        Symbol epsilon = getEpsilon(symbols);
+        Set<Symbol> dfaSymbols = nfa.getSymbols();
+        Symbol epsilon = getEpsilon(dfaSymbols);
 
-        State initialDFAState = nfa.getInitialState();
+        State dfaInitialState = nfa.getInitialState();
 
         Set<State> dfaStates = new HashSet<>();
 
         Map<State, Map<Symbol, State>> dfaTableTransition = new HashMap<>();
 
         Queue<State> unprocessedDFAStates = new LinkedList<>();
-        unprocessedDFAStates.add(initialDFAState);
+        unprocessedDFAStates.add(dfaInitialState);
         while (!unprocessedDFAStates.isEmpty()) {
             State currentDFAState = unprocessedDFAStates.poll();
             Map<Symbol, State> map = new HashMap<>();
-            for (Symbol symbol : symbols) {
+            for (Symbol symbol : dfaSymbols) {
                 Set<State> subStates = new HashSet<>();
                 if (currentDFAState.getValue().getType() == StateValue.Type.SET_STATE) {
                     Set<State> subCurrentStates = currentDFAState.getValue().getSetState();
@@ -43,6 +43,14 @@ public class ConvertNFAToDFA {
             dfaTableTransition.put(currentDFAState, map);
         }
 
+        Set<State> dfaFinalStates = getDfaFinalStates(nfa, dfaStates);
+
+        TransitionFunctionDFA transitionFunctionDFA = new TransitionFunctionDFA(dfaTableTransition);
+
+        return new DFA(dfaStates, dfaSymbols, dfaInitialState, dfaFinalStates, transitionFunctionDFA);
+    }
+
+    private static Set<State> getDfaFinalStates(NFA nfa, Set<State> dfaStates) {
         Set<State> dfaFinalStates = new HashSet<>();
         for (State dfaState : dfaStates) {
             if (dfaState.getValue().getType() == StateValue.Type.SET_STATE) {
@@ -54,10 +62,7 @@ public class ConvertNFAToDFA {
                 }
             }
         }
-
-        TransitionFunctionDFA transitionFunctionDFA = new TransitionFunctionDFA(dfaTableTransition);
-
-        return new DFA(dfaStates, symbols, initialDFAState, dfaFinalStates, transitionFunctionDFA);
+        return dfaFinalStates;
     }
 
     private State newStateFromSubStates(Set<State> states, Set<State> subStates) {

@@ -1,19 +1,24 @@
 package ru.bmstu.iu9.tfl_lab_lib.automaton.model;
 
 import lombok.AllArgsConstructor;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import java.util.*;
 
+@Getter
 @AllArgsConstructor
 public class TransitionFunctionNFA implements TransitionFunction {
 
     private Map<State, Map<Symbol, Set<State>>> tableTransition;
 
-    private Symbol epsilon;
+    private Symbol epsilon = new Symbol(Symbol.Type.EPSILON);
 
     public TransitionFunctionNFA(Map<State, Map<Symbol, Set<State>>> tableTransition) {
         this.tableTransition = tableTransition;
+    }
+
+    public TransitionFunctionNFA() {
+        this.tableTransition = new HashMap<>();
     }
 
     @Override
@@ -52,5 +57,16 @@ public class TransitionFunctionNFA implements TransitionFunction {
             }
         }
         return states;
+    }
+
+    public void putToTable(State stateStart, Symbol symbol, Set<State> stateEnd) {
+        Map<Symbol, Set<State>> oldMap = tableTransition.get(stateStart);
+        Map<Symbol, Set<State>> newMap = Objects.requireNonNullElseGet(oldMap, HashMap::new);
+        newMap.put(symbol, stateEnd);
+        tableTransition.put(stateStart, newMap);
+    }
+
+    public void putAll(TransitionFunctionNFA transitionFunctionNFA) {
+        tableTransition.putAll(transitionFunctionNFA.getTableTransition());
     }
 }

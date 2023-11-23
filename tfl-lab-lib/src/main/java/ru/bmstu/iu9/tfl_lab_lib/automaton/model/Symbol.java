@@ -2,20 +2,21 @@ package ru.bmstu.iu9.tfl_lab_lib.automaton.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class Symbol {
     private String string;
     private Type type;
     private Regex regex;
 
-    public enum Type {
-        SYMBOL,
-        EPSILON,
-        REGEX
+    public Symbol(Type type) {
+        this.type = type;
+    }
+
+    public Symbol(String string) {
+        this.string = string;
+        this.type = Type.SYMBOL;
     }
 
     @Override
@@ -34,5 +35,11 @@ public class Symbol {
                 return null;
             }
         }
+    }
+
+    public enum Type {
+        SYMBOL,
+        EPSILON,
+        REGEX
     }
 }

@@ -80,7 +80,7 @@ public class Regex implements Serializable {
         }
     }
 
-    enum Type {
+    public enum Type {
         OR,
         CONCAT,
         ASTERISK,

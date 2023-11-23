@@ -8,16 +8,31 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Symbol {
-    private String value;
+    private String string;
     private Type type;
+    private Regex regex;
 
     public enum Type {
         SYMBOL,
-        EPSILON
+        EPSILON,
+        REGEX
     }
 
     @Override
     public String toString() {
-        return value;
+        switch (type) {
+            case SYMBOL -> {
+                return string;
+            }
+            case REGEX -> {
+                return regex.toString();
+            }
+            case EPSILON -> {
+                return "ε";
+            }
+            default -> {
+                return null;
+            }
+        }
     }
 }

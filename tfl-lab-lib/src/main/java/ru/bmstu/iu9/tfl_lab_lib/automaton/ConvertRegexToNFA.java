@@ -10,6 +10,7 @@ import java.util.Set;
 @UtilityClass
 public class ConvertRegexToNFA {
     public static int currentNumber = 0;
+    public static final Symbol epsilon = new Symbol(Symbol.Type.EPSILON);
 
     //    Theorem 3.7. Any language defined by a regular expression can be defined by some finite automaton;
     public NFA convert(Regex regex) {
@@ -46,13 +47,13 @@ public class ConvertRegexToNFA {
         states.add(finalState);
 
         Set<Symbol> symbols = new HashSet<>();
-        symbols.add(new Symbol(Symbol.Type.EPSILON));
+        symbols.add(epsilon);
 
         Set<State> finalStates = new HashSet<>();
         finalStates.add(finalState);
 
         TransitionFunctionNFA transitionFunction = new TransitionFunctionNFA();
-        transitionFunction.putToTable(initialState, new Symbol(Symbol.Type.EPSILON), finalStates);
+        transitionFunction.putToTable(initialState, epsilon, finalStates);
 
         return new NFA(states, symbols, initialState, finalStates, transitionFunction);
     }
@@ -123,39 +124,52 @@ public class ConvertRegexToNFA {
         Set<Symbol> symbols = new HashSet<>();
         symbols.addAll(leftNFA.getSymbols());
         symbols.addAll(rightNFA.getSymbols());
-        symbols.add(new Symbol(Symbol.Type.EPSILON));
+        symbols.add(epsilon);
 
         TransitionFunctionNFA transitionFunction = new TransitionFunctionNFA();
         transitionFunction.putAll(leftNFA.getTransitionFunction());
         transitionFunction.putAll(rightNFA.getTransitionFunction());
-        Set<State> finalStatesLeft = leftNFA.getFinalStates();
-        State finalStateLeft = new State();
-        for (State state : finalStatesLeft) {
-            finalStateLeft = state;
-        }
-        State initialStatRight = rightNFA.getInitialState();
-        Set<State> initialStatesRight = new HashSet<>();
-        initialStatesRight.add(initialStatRight);
-        transitionFunction.putToTable(finalStateLeft, new Symbol(Symbol.Type.EPSILON), initialStatesRight);
+        transitionFunction.putToTable(trans(leftNFA.getFinalStates()), epsilon, trans(rightNFA.getInitialState()));
 
         return new NFA(states, symbols, initialState, finalStates, transitionFunction);
     }
 
     private NFA getAsteriskFA(NFA leftNFA) {
-//        State initialState = new State(String.valueOf(currentNumber++));
-//        State finalState = new State(String.valueOf(currentNumber++));
-//        Set<State> states = new HashSet<>();
-//        states.add(initialState);
-//        states.add(finalState);
-//        Set<Symbol> symbols = new HashSet<>();
-//        symbols.add(symbol);
-//        Set<State> finalStates = new HashSet<>();
-//        finalStates.add(finalState);
-//        Map<State, Map<Symbol, Set<State>>> tableTransition = new HashMap<>();
-//        putTable(tableTransition, initialState, symbol, finalStates);
-//        TransitionFunctionNFA transitionFunction = new TransitionFunctionNFA(tableTransition);
-//        return new NFA(states, symbols, initialState, finalStates, transitionFunction);
+        State initialState = new State(String.valueOf(currentNumber++));
+        State finalState = new State(String.valueOf(currentNumber++));
+
+        Set<State> states = new HashSet<>(leftNFA.getStates());
+        states.add(initialState);
+        states.add(finalState);
+
+        Set<Symbol> symbols = new HashSet<>(leftNFA.getSymbols());
+        symbols.add(epsilon);
+
+        Set<State> finalStates = trans(finalState);
+
+        TransitionFunctionNFA transitionFunction = new TransitionFunctionNFA();
+        transitionFunction.putAll(leftNFA.getTransitionFunction());
+        transitionFunction.putToTable(initialState, epsilon, trans(leftNFA.getInitialState()));
+        transitionFunction.putToTable(trans(leftNFA.getFinalStates()), epsilon, trans(leftNFA.getInitialState()));
+        transitionFunction.putToTable(trans(leftNFA.getFinalStates()), epsilon, trans(finalState));
+        transitionFunction.putToTable(initialState, epsilon, finalStates);
+
+        return new NFA(states, symbols, initialState, finalStates, transitionFunction);
     }
 
+
+    private State trans(Set<State> states) {
+        State res = new State();
+        for (State state : states) {
+            res = state;
+        }
+        return res;
+    }
+
+    private Set<State> trans(State state) {
+        Set<State> res = new HashSet<>();
+        res.add(state);
+        return res;
+    }
 
 }

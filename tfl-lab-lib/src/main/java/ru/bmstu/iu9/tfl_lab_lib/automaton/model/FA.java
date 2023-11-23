@@ -11,5 +11,5 @@ public interface FA {
 
     Set<State> getFinalStates();
 
-    TransitionFunctionDFA getTransitionFunction();
+    TransitionFunction getTransitionFunction();
 }

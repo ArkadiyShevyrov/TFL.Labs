@@ -2,6 +2,7 @@ package ru.bmstu.iu9.tfl_lab_lib.automaton.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import java.io.Serializable;
@@ -30,6 +31,10 @@ public class Regex implements Serializable {
     public Regex(Type type, String value) {
         this.type = type;
         this.value = value;
+    }
+
+    public Regex(Type type) {
+        this.type = type;
     }
 
     public static String drawTree(Regex root) {
@@ -74,6 +79,12 @@ public class Regex implements Serializable {
                 }
                 return "(" + left + ")" + "*";
             }
+            case EPSILON -> {
+                return "ε";
+            }
+            case EMPTY -> {
+                return "∅";
+            }
             default -> {
                 return "";
             }
@@ -85,6 +96,7 @@ public class Regex implements Serializable {
         CONCAT,
         ASTERISK,
         SYMBOL,
-        EPSILON
+        EPSILON,
+        EMPTY
     }
 }

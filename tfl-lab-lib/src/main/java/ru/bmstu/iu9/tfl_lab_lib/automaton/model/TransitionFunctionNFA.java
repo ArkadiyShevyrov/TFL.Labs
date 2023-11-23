@@ -2,7 +2,6 @@ package ru.bmstu.iu9.tfl_lab_lib.automaton.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import java.util.*;
 
 @Getter
@@ -62,11 +61,34 @@ public class TransitionFunctionNFA implements TransitionFunction {
     public void putToTable(State stateStart, Symbol symbol, Set<State> stateEnd) {
         Map<Symbol, Set<State>> oldMap = tableTransition.get(stateStart);
         Map<Symbol, Set<State>> newMap = Objects.requireNonNullElseGet(oldMap, HashMap::new);
-        newMap.put(symbol, stateEnd);
+        Set<State> states = newMap.get(symbol);
+        if (states == null) {
+            newMap.put(symbol, stateEnd);
+        } else {
+            states.addAll(stateEnd);
+        }
         tableTransition.put(stateStart, newMap);
     }
 
     public void putAll(TransitionFunctionNFA transitionFunctionNFA) {
         tableTransition.putAll(transitionFunctionNFA.getTableTransition());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (Map.Entry<State, Map<Symbol, Set<State>>> entry : tableTransition.entrySet()) {
+            State key = entry.getKey();
+            Map<Symbol, Set<State>> value = entry.getValue();
+
+            for (Map.Entry<Symbol, Set<State>> innerEntry : value.entrySet()) {
+                Symbol innerKey = innerEntry.getKey();
+                Set<State> innerValue = innerEntry.getValue();
+
+                stringBuilder.append(key).append(" -> ").append(innerKey).append(" -> ").append(innerValue).append("\n");
+            }
+        }
+        return "\n" +stringBuilder.toString().trim();
     }
 }

@@ -7,8 +7,8 @@ import java.util.Set;
 
 @UtilityClass
 public class ConvertRegexToNFA {
-    public static final Symbol epsilon = new Symbol(Symbol.Type.EPSILON);
-    public static int currentNumber = 0;
+    private static final Symbol epsilon = new Symbol(Symbol.Type.EPSILON);
+    private static int currentNumber = 0;
 
     //    Theorem 3.7. Any language defined by a regular expression can be defined by some finite automaton;
     public NFA convert(Regex regex) {
@@ -17,7 +17,7 @@ public class ConvertRegexToNFA {
             case EPSILON -> {
                 return getEpsilonFA();
             }
-            default -> {
+            case EMPTY -> {
                 return getEmptyFA();
             }
             case SYMBOL -> {
@@ -32,6 +32,9 @@ public class ConvertRegexToNFA {
             }
             case ASTERISK -> {
                 return getAsteriskFA(convert(regex.getLeft()));
+            }
+            default -> {
+                return null;
             }
         }
     }

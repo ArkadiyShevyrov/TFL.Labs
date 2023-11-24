@@ -48,7 +48,7 @@ public class TestConvertDFAToRegex {
         transitionFunctionDFA.putToTable(stateD);
 
         DFA dfa = new DFA(states, symbols, initialState, finalStates, transitionFunctionDFA);
-        Regex convert = ConvertDFAToRegex.convert(dfa);
+        Regex convert = OptimizeRegex.optimize(ConvertDFAToRegex.convert(dfa));
         log.info(convert.toString());
     }
 }

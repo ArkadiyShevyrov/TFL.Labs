@@ -2,7 +2,6 @@ package ru.bmstu.iu9.tfl_lab_lib.automaton.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import java.io.Serializable;
@@ -67,6 +66,10 @@ public class Regex implements Serializable {
                 if (right.getType() == Type.OR &&
                         left.getType() != Type.OR) {
                     return left + "(" + right + ")";
+                }
+                if (right.getType() == Type.OR &&
+                        left.getType() == Type.OR) {
+                    return "(" + left + ")" + "(" + right + ")";
                 }
                 return left + "" + right;
             }

@@ -70,6 +70,10 @@ public class TransitionFunctionNFA implements TransitionFunction {
         tableTransition.put(stateStart, newMap);
     }
 
+    public void putToTable(State stateStart, Symbol symbol, State... stateEnds) {
+        putToTable(stateStart, symbol, new HashSet<>(Arrays.asList(stateEnds)));
+    }
+
     public void putAll(TransitionFunctionNFA transitionFunctionNFA) {
         tableTransition.putAll(transitionFunctionNFA.getTableTransition());
     }
@@ -89,6 +93,6 @@ public class TransitionFunctionNFA implements TransitionFunction {
                 stringBuilder.append(key).append(" -> ").append(innerKey).append(" -> ").append(innerValue).append("\n");
             }
         }
-        return "\n" +stringBuilder.toString().trim();
+        return "\n" + stringBuilder.toString().trim();
     }
 }

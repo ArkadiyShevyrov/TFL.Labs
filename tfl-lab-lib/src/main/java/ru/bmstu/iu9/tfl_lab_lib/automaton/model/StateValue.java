@@ -3,13 +3,14 @@ package ru.bmstu.iu9.tfl_lab_lib.automaton.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
 
 @Getter
 @Setter
 @EqualsAndHashCode
-public class StateValue {
+public class StateValue implements Serializable {
     private Type type;
 
     private Set<State> setState;

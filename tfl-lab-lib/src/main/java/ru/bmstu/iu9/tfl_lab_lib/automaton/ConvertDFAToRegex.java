@@ -12,7 +12,7 @@ public class ConvertDFAToRegex {
         List<Regex> regexes = new ArrayList<>();
         Set<State> finalStates = dfa.getFinalStates();
         for (State finalState : finalStates) {
-            Regex regex = exclusion(dfa, SerializationUtils.clone(dfa.getTransitionFunction()), finalState);
+            Regex regex = exclusion(SerializationUtils.clone(dfa), SerializationUtils.clone(dfa.getTransitionFunction()), finalState);
             regexes.add(regex);
         }
         return combinateRegex(regexes);
@@ -42,18 +42,29 @@ public class ConvertDFAToRegex {
 
     private Regex exclusion(DFA dfa, TransitionFunctionDFA transitionFunction, State finalState) {
         Set<State> states = dfa.getStates();
-        Set<State> statesOtherInitialAndFinal = getStatesOtherInitialAndFinal(states, dfa.getInitialState(), finalState);
+        State initialState = dfa.getInitialState();
+        Set<State> statesOtherInitialAndFinal = getStatesOtherInitialAndFinal(states, initialState, finalState);
+        Map<State, Map<Symbol, State>> tableTransition = transitionFunction.getTableTransition();
+
         for (State state : statesOtherInitialAndFinal) {
-            Map<State, Map<Symbol, State>> tableTransition = transitionFunction.getTableTransition();
             Set<State> previousStates = getPreviousStates(tableTransition, state);
             Set<State> nextStates = getNextStates(tableTransition, state);
+            if (nextStates.size() == 0) {
+                for (State prev : previousStates) {
+                    removeTransitions(tableTransition, prev, state);
+                }
+            }
             for (State prev : previousStates) {
                 for (State next : nextStates) {
-                    Regex prevNext = getTransitionRegex(tableTransition, prev, next);
+                    Regex prevNext = getTransitionRegex(
+                            SerializationUtils.clone(transitionFunction).getTableTransition(), prev, next);
                     removeTransitions(tableTransition, prev, next);
-                    Regex prevState = getTransitionRegex(tableTransition, prev, state);
-                    Regex stateNext = getTransitionRegex(tableTransition, state, next);
-                    Regex stateState = getTransitionRegex(tableTransition, state, state);
+                    Regex prevState = getTransitionRegex(
+                            SerializationUtils.clone(transitionFunction).getTableTransition(), prev, state);
+                    Regex stateNext = getTransitionRegex(
+                            SerializationUtils.clone(transitionFunction).getTableTransition(), state, next);
+                    Regex stateState = getTransitionRegex(
+                            SerializationUtils.clone(transitionFunction).getTableTransition(), state, state);
                     Regex regex = new Regex(
                             Regex.Type.OR,
                             prevNext,
@@ -81,8 +92,48 @@ public class ConvertDFAToRegex {
                 }
             }
         }
-
-        return null;
+        if (initialState.equals(finalState)) {
+            return new Regex(Regex.Type.ASTERISK, getTransitionRegex(
+                    SerializationUtils.clone(transitionFunction).getTableTransition(), initialState, initialState));
+        }
+        Regex initInit = getTransitionRegex(
+                SerializationUtils.clone(transitionFunction).getTableTransition(), initialState, initialState);
+        Regex finalFinal = getTransitionRegex(
+                SerializationUtils.clone(transitionFunction).getTableTransition(), finalState, finalState);
+        Regex initFinal = getTransitionRegex(
+                SerializationUtils.clone(transitionFunction).getTableTransition(), initialState, finalState);
+        Regex finalInit = getTransitionRegex(
+                SerializationUtils.clone(transitionFunction).getTableTransition(), finalState, initialState);
+        return new Regex(
+                Regex.Type.CONCAT,
+                new Regex(
+                        Regex.Type.ASTERISK,
+                        new Regex(
+                                Regex.Type.OR,
+                                initInit,
+                                new Regex(
+                                        Regex.Type.CONCAT,
+                                        initFinal,
+                                        new Regex(
+                                                Regex.Type.CONCAT,
+                                                new Regex(
+                                                        Regex.Type.ASTERISK,
+                                                        finalFinal
+                                                ),
+                                                finalInit
+                                        )
+                                )
+                        )
+                ),
+                new Regex(
+                        Regex.Type.CONCAT,
+                        initFinal,
+                        new Regex(
+                                Regex.Type.ASTERISK,
+                                finalFinal
+                        )
+                )
+        );
     }
 
     private Set<State> getStatesOtherInitialAndFinal(Set<State> states, State initialState, State finalState) {

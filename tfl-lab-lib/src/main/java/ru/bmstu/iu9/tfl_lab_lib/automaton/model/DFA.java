@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Getter
 @AllArgsConstructor
-public class DFA implements FA {
+public class DFA implements FA,  Serializable {
     private Set<State> states;
     private Set<Symbol> symbols;
     private State initialState;

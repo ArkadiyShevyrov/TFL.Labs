@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import java.io.Serializable;
 import java.util.Set;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class State {
+public class State implements Serializable {
     private StateValue value;
 
     public State(String value) {

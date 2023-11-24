@@ -19,6 +19,11 @@ public class Symbol {
         this.type = Type.SYMBOL;
     }
 
+    public Symbol(Type type, Regex regex) {
+        this.type = type;
+        this.regex = regex;
+    }
+
     @Override
     public String toString() {
         switch (type) {

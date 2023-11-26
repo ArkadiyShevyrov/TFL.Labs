@@ -12,32 +12,16 @@ public class ConvertRegexToNFA {
 
     //    Theorem 3.7. Any language defined by a regular expression can be defined by some finite automaton;
     public NFA convert(Regex regex) {
-        switch (regex.getType()) {
-            // Basis
-            case EPSILON -> {
-                return getEpsilonFA();
-            }
-            case EMPTY -> {
-                return getEmptyFA();
-            }
-            case SYMBOL -> {
-                return getSymbolFA(new Symbol(regex.getValue()));
-            }
-            // Induction
-            case OR -> {
-                return getOrFA(convert(regex.getLeft()), convert(regex.getRight()));
-            }
-            case CONCAT -> {
-                return getConcatFA(convert(regex.getLeft()), convert(regex.getRight()));
-            }
-            case ASTERISK -> {
-                return getAsteriskFA(convert(regex.getLeft()));
-            }
-            default -> {
-                return null;
-            }
-        }
+        return switch (regex.getType()) {
+            case EPSILON -> getEpsilonFA();
+            case EMPTY -> getEmptyFA();
+            case SYMBOL -> getSymbolFA(new Symbol(regex.getValue()));
+            case OR -> getOrFA(convert(regex.getLeft()), convert(regex.getRight()));
+            case CONCAT -> getConcatFA(convert(regex.getLeft()), convert(regex.getRight()));
+            case ASTERISK -> getAsteriskFA(convert(regex.getLeft()));
+        };
     }
+
 
     private NFA getEpsilonFA() {
         State initialState = getInitialState();

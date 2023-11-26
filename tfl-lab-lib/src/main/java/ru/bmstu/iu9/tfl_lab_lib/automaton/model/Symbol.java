@@ -1,11 +1,13 @@
 package ru.bmstu.iu9.tfl_lab_lib.automaton.model;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import java.io.Serializable;
 
 @Getter
 @AllArgsConstructor
+@EqualsAndHashCode
 public class Symbol implements Serializable {
     private String string;
     private Type type;

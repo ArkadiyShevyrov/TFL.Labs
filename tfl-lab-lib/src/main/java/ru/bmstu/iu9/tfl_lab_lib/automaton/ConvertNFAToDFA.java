@@ -37,6 +37,9 @@ public class ConvertNFAToDFA {
                     }
                 }
                 State nextState = newStateFromSubStates(dfaStates, subStates);
+                if (nextState.getValue().getSetState().isEmpty()) {
+                    continue;
+                }
                 if (!dfaStates.contains(nextState)) {
                     unprocessedDFAStates.add(nextState);
                     dfaStates.add(nextState);

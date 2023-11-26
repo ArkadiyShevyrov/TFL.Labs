@@ -22,7 +22,9 @@ public class TransitionFunctionNFA implements TransitionFunction {
 
     @Override
     public Set<State> transition(State state, Symbol symbol) {
-        return tableTransition.get(state).get(symbol) == null ? new HashSet<>() : tableTransition.get(state).get(symbol) ;
+        Map<Symbol, Set<State>> symbolSetMap = tableTransition.get(state);
+        if (symbolSetMap == null) return  new HashSet<>();
+        return symbolSetMap.get(symbol) == null ? new HashSet<>() : tableTransition.get(state).get(symbol) ;
     }
 
     @Override

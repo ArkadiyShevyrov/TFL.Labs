@@ -32,6 +32,11 @@ public class Regex implements Serializable {
         this.value = value;
     }
 
+    public Regex(String value) {
+        this.type = Type.SYMBOL;
+        this.value = value;
+    }
+
     public Regex(Type type) {
         this.type = type;
     }

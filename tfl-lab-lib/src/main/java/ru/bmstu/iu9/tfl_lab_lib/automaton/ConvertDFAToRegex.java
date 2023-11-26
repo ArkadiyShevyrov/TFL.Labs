@@ -2,6 +2,7 @@ package ru.bmstu.iu9.tfl_lab_lib.automaton;
 
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.SerializationUtils;
+import ru.bmstu.iu9.tfl_lab_lib.OptimizeRegex;
 import ru.bmstu.iu9.tfl_lab_lib.automaton.model.*;
 import java.util.*;
 
@@ -15,12 +16,12 @@ public class ConvertDFAToRegex {
             Regex regex = exclusion(SerializationUtils.clone(dfa), SerializationUtils.clone(dfa.getTransitionFunction()), finalState);
             regexes.add(regex);
         }
-        return combinateRegex(regexes);
+        return OptimizeRegex.optimize(combinateRegex(regexes));
     }
 
     private Regex combinateRegex(List<Regex> regexes) {
         if (regexes.size() == 0) {
-            return null;
+            return new Regex(Regex.Type.EMPTY);
         }
         if (regexes.size() == 1) {
             return regexes.get(0);
@@ -65,7 +66,7 @@ public class ConvertDFAToRegex {
                             SerializationUtils.clone(transitionFunction).getTableTransition(), state, next);
                     Regex stateState = getTransitionRegex(
                             SerializationUtils.clone(transitionFunction).getTableTransition(), state, state);
-                    Regex regex = new Regex(
+                    Regex regex = OptimizeRegex.optimize(new Regex(
                             Regex.Type.OR,
                             prevNext,
                             new Regex(
@@ -80,7 +81,10 @@ public class ConvertDFAToRegex {
                                             stateNext
                                     )
                             )
-                    );
+                    ));
+                    if (regex.getType() == Regex.Type.EMPTY) {
+                        continue;
+                    }
                     transitionFunction.putToTable(prev, new Symbol(Symbol.Type.REGEX, regex), next);
                 }
             }
@@ -93,8 +97,8 @@ public class ConvertDFAToRegex {
             }
         }
         if (initialState.equals(finalState)) {
-            return new Regex(Regex.Type.ASTERISK, getTransitionRegex(
-                    SerializationUtils.clone(transitionFunction).getTableTransition(), initialState, initialState));
+            return OptimizeRegex.optimize(new Regex(Regex.Type.ASTERISK, getTransitionRegex(
+                    SerializationUtils.clone(transitionFunction).getTableTransition(), initialState, initialState)));
         }
         Regex initInit = getTransitionRegex(
                 SerializationUtils.clone(transitionFunction).getTableTransition(), initialState, initialState);
@@ -104,7 +108,7 @@ public class ConvertDFAToRegex {
                 SerializationUtils.clone(transitionFunction).getTableTransition(), initialState, finalState);
         Regex finalInit = getTransitionRegex(
                 SerializationUtils.clone(transitionFunction).getTableTransition(), finalState, initialState);
-        return new Regex(
+        return OptimizeRegex.optimize(new Regex(
                 Regex.Type.CONCAT,
                 new Regex(
                         Regex.Type.ASTERISK,
@@ -133,7 +137,7 @@ public class ConvertDFAToRegex {
                                 finalFinal
                         )
                 )
-        );
+        ));
     }
 
     private Set<State> getStatesOtherInitialAndFinal(Set<State> states, State initialState, State finalState) {

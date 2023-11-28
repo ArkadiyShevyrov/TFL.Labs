@@ -53,8 +53,8 @@ public class ConvertDFAToRegex2 {
 
     private Regex getRegex(State stateI, State stateJ, int numberK) {
         if (numberK == 0) {
+            List<Regex> listRegex = new ArrayList<>();
             if (stateI.equals(stateJ)) {
-                List<Regex> listRegex = new ArrayList<>();
                 listRegex.add(new Regex(Regex.Type.EPSILON));
                 Map<Symbol, State> symbolStateMap = tf.getTableTransition().get(stateI);
                 for (Symbol symbol : symbolStateMap.keySet()) {
@@ -63,9 +63,7 @@ public class ConvertDFAToRegex2 {
                         listRegex.add(new Regex(symbol.getString()));
                     }
                 }
-                return OptimizeRegex.optimize(combinateRegex(listRegex));
             } else {
-                List<Regex> listRegex = new ArrayList<>();
                 Map<Symbol, State> symbolStateMap = tf.getTableTransition().get(stateI);
                 for (Symbol symbol : symbolStateMap.keySet()) {
                     State state = symbolStateMap.get(symbol);
@@ -73,8 +71,8 @@ public class ConvertDFAToRegex2 {
                         listRegex.add(new Regex(symbol.getString()));
                     }
                 }
-                return OptimizeRegex.optimize(combinateRegex(listRegex));
             }
+            return OptimizeRegex.optimize(combinateRegex(listRegex));
         } else {
             State stateK = states.get(numberK);
             int numberK1 = numberK - 1;

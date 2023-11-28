@@ -21,10 +21,10 @@ public class ConvertDFAToRegex2 {
         finalStates = dfa.getFinalStates();
     }
 
-    public Regex convert(DFA dfa) {
+    public Regex convert() {
         List<Regex> list = new ArrayList<>();
         for (State finalState : finalStates) {
-            list.add(getRegex(initialState, finalState, states.size()));
+            list.add(getRegex(initialState, finalState, states.size()-1));
         }
         return combinateRegex(list);
     }
@@ -52,7 +52,7 @@ public class ConvertDFAToRegex2 {
     }
 
     private Regex getRegex(State stateI, State stateJ, int numberK) {
-        if (numberK == 0) {
+        if (numberK == -1) {
             List<Regex> listRegex = new ArrayList<>();
             if (stateI.equals(stateJ)) {
                 listRegex.add(new Regex(Regex.Type.EPSILON));

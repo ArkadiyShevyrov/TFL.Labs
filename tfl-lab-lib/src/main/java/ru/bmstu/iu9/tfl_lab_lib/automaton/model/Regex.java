@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @AllArgsConstructor
-public class Regex implements Serializable {
+public class Regex implements Serializable, Comparable {
     private Type type;
     private String value;
     private Regex left;
@@ -99,12 +99,22 @@ public class Regex implements Serializable {
         }
     }
 
+    @Override
+    public int compareTo(Object o) {
+        Regex r = (Regex) o;
+        if (this.type == r.type) {
+            return this.toString().compareTo(r.toString());
+        } else {
+            return this.type.ordinal() - r.type.ordinal();
+        }
+    }
+
     public enum Type {
+        EMPTY,
+        EPSILON,
+        SYMBOL,
         OR,
         CONCAT,
         ASTERISK,
-        SYMBOL,
-        EPSILON,
-        EMPTY
     }
 }

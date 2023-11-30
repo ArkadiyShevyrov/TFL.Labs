@@ -55,10 +55,7 @@ public class OptimizeRegexForEpsilonAndEmpty {
         if (right.getType() == Regex.Type.EPSILON) {
             return left;
         }
-        if (left.getType() == Regex.Type.EMPTY) {
-            return empty;
-        }
-        if (right.getType() == Regex.Type.EMPTY) {
+        if (left.getType() == Regex.Type.EMPTY || right.getType() == Regex.Type.EMPTY) {
             return empty;
         }
         regex.setLeft(left);

@@ -17,13 +17,18 @@ public class ConvertRegexToNFA {
         return switch (regex.getType()) {
             case EPSILON -> getEpsilonFA();
             case EMPTY -> getEmptyFA();
-            case SYMBOL -> getSymbolFA(new Symbol(regex.getValue()));
-            case OR -> getOrFA(convert(regex.getLeft()), convert(regex.getRight()));
-            case CONCAT -> getConcatFA(convert(regex.getLeft()), convert(regex.getRight()));
-            case ASTERISK -> getAsteriskFA(convert(regex.getLeft()));
+            case SYMBOL -> getSymbolFA(
+                    new Symbol(regex.getValue()));
+            case OR -> getOrFA(
+                    convert(regex.getLeft()),
+                    convert(regex.getRight()));
+            case CONCAT -> getConcatFA(
+                    convert(regex.getLeft()),
+                    convert(regex.getRight()));
+            case ASTERISK -> getAsteriskFA(
+                    convert(regex.getLeft()));
         };
     }
-
 
     private NFA getEpsilonFA() {
         State initialState = getInitialState();

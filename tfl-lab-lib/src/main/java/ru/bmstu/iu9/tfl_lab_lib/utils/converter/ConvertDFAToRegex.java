@@ -10,8 +10,10 @@ import ru.bmstu.iu9.tfl_lab_lib.model.automaton.TransitionFunctionDFA;
 import ru.bmstu.iu9.tfl_lab_lib.utils.Optimize;
 import java.util.*;
 
+// TODO: Refactoring
 @UtilityClass
 public class ConvertDFAToRegex {
+    private final Regex empty = new Regex(Regex.Type.EMPTY);
 
     public Regex convert(DFA dfa) {
         List<Regex> regexes = new ArrayList<>();

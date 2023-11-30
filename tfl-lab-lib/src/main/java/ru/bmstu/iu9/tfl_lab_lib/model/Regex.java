@@ -8,12 +8,13 @@ import java.io.Serializable;
 
 @Slf4j
 @Getter
-@Setter
 @AllArgsConstructor
-public class Regex implements Serializable, Comparable {
+public class Regex implements Serializable, Comparable<Regex> {
     private Type type;
     private String value;
+    @Setter
     private Regex left;
+    @Setter
     private Regex right;
 
     public Regex(Type type, Regex left) {
@@ -100,8 +101,7 @@ public class Regex implements Serializable, Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        Regex r = (Regex) o;
+    public int compareTo(Regex r) {
         if (this.type == r.type) {
             return this.toString().compareTo(r.toString());
         } else {
@@ -113,8 +113,8 @@ public class Regex implements Serializable, Comparable {
         EMPTY,
         EPSILON,
         SYMBOL,
-        OR,
         CONCAT,
+        OR,
         ASTERISK,
     }
 }

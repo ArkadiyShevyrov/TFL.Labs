@@ -1,4 +1,4 @@
-package ru.bmstu.iu9.tfl_lab_lib.automaton.model;
+package ru.bmstu.iu9.tfl_lab_lib.automaton;
 
 import java.util.Set;
 

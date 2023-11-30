@@ -1,10 +1,10 @@
 package ru.bmstu.iu9.tfl_lab_lib.language;
 
 import lombok.AllArgsConstructor;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.model.FA;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.model.State;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.model.StringSymbols;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.model.Symbol;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.FA;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.State;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.StringSymbols;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.Symbol;
 import java.util.Set;
 
 @AllArgsConstructor

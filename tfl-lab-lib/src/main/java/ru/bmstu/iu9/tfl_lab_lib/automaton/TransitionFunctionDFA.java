@@ -1,13 +1,11 @@
-package ru.bmstu.iu9.tfl_lab_lib.automaton.model;
+package ru.bmstu.iu9.tfl_lab_lib.automaton;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @AllArgsConstructor

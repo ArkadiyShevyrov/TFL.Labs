@@ -2,9 +2,8 @@ package ru.bmstu.iu9.tfl_lab_lib;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.ConvertDFAToRegex;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.ConvertDFAToRegex2;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.ConvertNFAToDFA;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.*;
+import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertDFAToRegex2;
 import ru.bmstu.iu9.tfl_lab_lib.automaton.model.*;
 import java.util.HashSet;
 import java.util.Set;

@@ -1,6 +1,7 @@
-package ru.bmstu.iu9.tfl_lab_lib.automaton;
+package ru.bmstu.iu9.tfl_lab_lib.utils.converter;
 
 import ru.bmstu.iu9.tfl_lab_lib.OptimizeRegex;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.*;
 import ru.bmstu.iu9.tfl_lab_lib.automaton.model.*;
 import java.util.ArrayList;
 import java.util.List;

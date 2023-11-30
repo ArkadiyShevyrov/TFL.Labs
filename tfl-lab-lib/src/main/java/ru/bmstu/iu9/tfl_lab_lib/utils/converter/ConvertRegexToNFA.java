@@ -1,7 +1,7 @@
-package ru.bmstu.iu9.tfl_lab_lib.automaton;
+package ru.bmstu.iu9.tfl_lab_lib.utils.converter;
 
 import lombok.experimental.UtilityClass;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.model.*;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.*;
 import java.util.HashSet;
 import java.util.Set;
 

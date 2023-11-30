@@ -1,9 +1,9 @@
-package ru.bmstu.iu9.tfl_lab_lib.automaton;
+package ru.bmstu.iu9.tfl_lab_lib.utils.converter;
 
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.SerializationUtils;
 import ru.bmstu.iu9.tfl_lab_lib.OptimizeRegex;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.model.*;
+import ru.bmstu.iu9.tfl_lab_lib.automaton.*;
 import java.util.*;
 
 @UtilityClass

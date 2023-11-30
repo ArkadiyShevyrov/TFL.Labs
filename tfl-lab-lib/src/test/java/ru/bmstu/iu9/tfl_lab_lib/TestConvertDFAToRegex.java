@@ -58,7 +58,6 @@ public class TestConvertDFAToRegex {
         transitionFunctionNFA.putToTable(stateB , symbol1, stateC);
         transitionFunctionNFA.putToTable(stateC , symbol0, stateD);
         transitionFunctionNFA.putToTable(stateC , symbol1, stateD);
-        transitionFunctionNFA.putToTable(stateD);
 
         NFA nfa = new NFA(states, symbols, initialState, finalStates, transitionFunctionNFA);
         DFA dfa = ConvertNFAToDFA.convert(nfa);

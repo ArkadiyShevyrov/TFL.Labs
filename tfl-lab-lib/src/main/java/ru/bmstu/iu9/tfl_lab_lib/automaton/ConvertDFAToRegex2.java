@@ -1,6 +1,5 @@
 package ru.bmstu.iu9.tfl_lab_lib.automaton;
 
-import lombok.experimental.UtilityClass;
 import ru.bmstu.iu9.tfl_lab_lib.OptimizeRegex;
 import ru.bmstu.iu9.tfl_lab_lib.automaton.model.*;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class ConvertDFAToRegex2 {
     public Regex convert() {
         List<Regex> list = new ArrayList<>();
         for (State finalState : finalStates) {
-            list.add(getRegex(initialState, finalState, states.size()-1));
+            list.add(getRegex(initialState, finalState, states.size() - 1));
         }
         return combinateRegex(list);
     }
@@ -76,7 +75,7 @@ public class ConvertDFAToRegex2 {
         } else {
             State stateK = states.get(numberK);
             int numberK1 = numberK - 1;
-            return  OptimizeRegex.optimize(new Regex(
+            return OptimizeRegex.optimize(new Regex(
                     Regex.Type.OR,
                     getRegex(stateI, stateJ, numberK1),
                     new Regex(

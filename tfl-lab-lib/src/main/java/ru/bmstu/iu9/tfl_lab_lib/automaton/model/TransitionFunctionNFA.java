@@ -22,9 +22,9 @@ public class TransitionFunctionNFA implements TransitionFunction {
 
     @Override
     public Set<State> transition(State state, Symbol symbol) {
-        Map<Symbol, Set<State>> symbolSetMap = tableTransition.get(state);
-        if (symbolSetMap == null) return  new HashSet<>();
-        return symbolSetMap.get(symbol) == null ? new HashSet<>() : tableTransition.get(state).get(symbol) ;
+        return Optional.ofNullable(tableTransition.get(state))
+                .map(symbolSetMap -> new HashSet<>(symbolSetMap.getOrDefault(symbol, new HashSet<>())))
+                .orElse(new HashSet<>());
     }
 
     @Override
@@ -80,23 +80,22 @@ public class TransitionFunctionNFA implements TransitionFunction {
         tableTransition.putAll(transitionFunctionNFA.getTableTransition());
     }
 
-    public void putToTable(State stateStart) {
-        tableTransition.put(stateStart, new HashMap<>());
-    }
-
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-
-        for (Map.Entry<State, Map<Symbol, Set<State>>> entry : tableTransition.entrySet()) {
-            State key = entry.getKey();
-            Map<Symbol, Set<State>> value = entry.getValue();
-
-            for (Map.Entry<Symbol, Set<State>> innerEntry : value.entrySet()) {
-                Symbol innerKey = innerEntry.getKey();
-                Set<State> innerValue = innerEntry.getValue();
-
-                stringBuilder.append(key).append(" -> ").append(innerKey).append(" -> ").append(innerValue).append("\n");
+        for (Map.Entry<State, Map<Symbol, Set<State>>> outerEntry : tableTransition.entrySet()) {
+            State currentState = outerEntry.getKey();
+            Map<Symbol, Set<State>> transitionMap = outerEntry.getValue();
+            for (Map.Entry<Symbol, Set<State>> innerEntry : transitionMap.entrySet()) {
+                Symbol transitionSymbol = innerEntry.getKey();
+                Set<State> destinationStates = innerEntry.getValue();
+                stringBuilder
+                        .append(currentState)
+                        .append(" -> ")
+                        .append(transitionSymbol)
+                        .append(" -> ")
+                        .append(destinationStates)
+                        .append("\n");
             }
         }
         return "\n" + stringBuilder.toString().trim();

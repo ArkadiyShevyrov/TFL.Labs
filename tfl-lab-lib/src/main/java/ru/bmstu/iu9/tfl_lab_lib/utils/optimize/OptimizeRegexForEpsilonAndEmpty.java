@@ -9,48 +9,60 @@ public class OptimizeRegexForEpsilonAndEmpty {
     public Regex optimize(Regex regex) {
         switch (regex.getType()) {
             case ASTERISK -> {
-                Regex optimize = optimize(regex.getLeft());
-                if (optimize.getType() == Regex.Type.EMPTY) {
-                    return epsilon;
-                }
-                regex.setLeft(optimize);
-                return regex;
+                return optimizeAsterisk(regex);
             }
             case OR -> {
-                Regex left = optimize(regex.getLeft());
-                Regex right = optimize(regex.getRight());
-                if (left.getType() == Regex.Type.EMPTY) {
-                    return right;
-                }
-                if (right.getType() == Regex.Type.EMPTY) {
-                    return left;
-                }
-                regex.setLeft(left);
-                regex.setRight(right);
-                return regex;
+                return optimizeOr(regex);
             }
             case CONCAT -> {
-                Regex left = optimize(regex.getLeft());
-                Regex right = optimize(regex.getRight());
-                if (left.getType() == Regex.Type.EPSILON) {
-                    return right;
-                }
-                if (right.getType() == Regex.Type.EPSILON) {
-                    return left;
-                }
-                if (left.getType() == Regex.Type.EMPTY) {
-                    return empty;
-                }
-                if (right.getType() == Regex.Type.EMPTY) {
-                    return empty;
-                }
-                regex.setLeft(left);
-                regex.setRight(right);
-                return regex;
+                return optimizeConcat(regex);
             }
             default -> {
                 return regex;
             }
         }
+    }
+
+    private Regex optimizeAsterisk(Regex regex) {
+        Regex optimize = optimize(regex.getLeft());
+        if (optimize.getType() == Regex.Type.EMPTY) {
+            return epsilon;
+        }
+        regex.setLeft(optimize);
+        return regex;
+    }
+
+    private Regex optimizeOr(Regex regex) {
+        Regex left = optimize(regex.getLeft());
+        Regex right = optimize(regex.getRight());
+        if (left.getType() == Regex.Type.EMPTY) {
+            return right;
+        }
+        if (right.getType() == Regex.Type.EMPTY) {
+            return left;
+        }
+        regex.setLeft(left);
+        regex.setRight(right);
+        return regex;
+    }
+
+    private Regex optimizeConcat(Regex regex) {
+        Regex left = optimize(regex.getLeft());
+        Regex right = optimize(regex.getRight());
+        if (left.getType() == Regex.Type.EPSILON) {
+            return right;
+        }
+        if (right.getType() == Regex.Type.EPSILON) {
+            return left;
+        }
+        if (left.getType() == Regex.Type.EMPTY) {
+            return empty;
+        }
+        if (right.getType() == Regex.Type.EMPTY) {
+            return empty;
+        }
+        regex.setLeft(left);
+        regex.setRight(right);
+        return regex;
     }
 }

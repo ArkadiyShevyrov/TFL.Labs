@@ -1,6 +1,5 @@
 package ru.bmstu.iu9.tfl_lab_lib.utils.converter;
 
-import lombok.experimental.UtilityClass;
 import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.NFA;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.State;

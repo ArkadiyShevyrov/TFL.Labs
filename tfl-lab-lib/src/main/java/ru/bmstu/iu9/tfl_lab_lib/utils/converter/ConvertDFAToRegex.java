@@ -151,7 +151,7 @@ public class ConvertDFAToRegex {
     }
 
 
-    public static Set<State> getPreviousStates(Map<State, Map<Symbol, State>> tableTransition, State s) {
+    private static Set<State> getPreviousStates(Map<State, Map<Symbol, State>> tableTransition, State s) {
         Set<State> previousStates = new HashSet<>();
         for (State key : tableTransition.keySet()) {
             Map<Symbol, State> transitions = tableTransition.get(key);
@@ -188,7 +188,7 @@ public class ConvertDFAToRegex {
         return combinateRegex(regexes);
     }
 
-    public void removeTransitions(Map<State, Map<Symbol, State>> tableTransition, State fromState, State toState) {
+    private void removeTransitions(Map<State, Map<Symbol, State>> tableTransition, State fromState, State toState) {
         Map<Symbol, State> transitionsFromState = tableTransition.get(fromState);
         transitionsFromState.entrySet().removeIf(entry -> entry.getValue().equals(toState));
     }

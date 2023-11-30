@@ -5,7 +5,7 @@ import ru.bmstu.iu9.tfl_lab_lib.model.automaton.DFA;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.State;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.Symbol;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.TransitionFunctionDFA;
-import ru.bmstu.iu9.tfl_lab_lib.utils.optimize.OptimizeRegexForEpsilonAndEmpty;
+import ru.bmstu.iu9.tfl_lab_lib.utils.Optimize;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,11 +75,11 @@ public class ConvertDFAToRegex2 {
                     }
                 }
             }
-            return OptimizeRegexForEpsilonAndEmpty.optimize(combinateRegex(listRegex));
+            return Optimize.optimizeRegexForEpsilonAndEmpty(combinateRegex(listRegex));
         } else {
             State stateK = states.get(numberK);
             int numberK1 = numberK - 1;
-            return OptimizeRegexForEpsilonAndEmpty.optimize(new Regex(
+            return Optimize.optimizeRegexForEpsilonAndEmpty(new Regex(
                     Regex.Type.OR,
                     getRegex(stateI, stateJ, numberK1),
                     new Regex(

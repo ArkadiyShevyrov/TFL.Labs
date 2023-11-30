@@ -1,50 +1,51 @@
 package ru.bmstu.iu9.tfl_lab_lib.utils.optimize;
 
-import lombok.experimental.UtilityClass;
 import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
 
-@UtilityClass
 public class OptimizeRegexForEpsilonAndEmpty {
-    public static Regex optimize(Regex regex) {
+    private final Regex empty = new Regex(Regex.Type.EMPTY);
+    private final Regex epsilon = new Regex(Regex.Type.EPSILON);
+
+    public Regex optimize(Regex regex) {
         switch (regex.getType()) {
             case ASTERISK -> {
                 Regex optimize = optimize(regex.getLeft());
                 if (optimize.getType() == Regex.Type.EMPTY) {
-                    return new Regex(Regex.Type.EPSILON);
+                    return epsilon;
                 }
                 regex.setLeft(optimize);
                 return regex;
             }
             case OR -> {
-                Regex optimizeLeft = optimize(regex.getLeft());
-                Regex optimizeRight = optimize(regex.getRight());
-                if (optimizeLeft.getType() == Regex.Type.EMPTY) {
-                    return optimizeRight;
+                Regex left = optimize(regex.getLeft());
+                Regex right = optimize(regex.getRight());
+                if (left.getType() == Regex.Type.EMPTY) {
+                    return right;
                 }
-                if (optimizeRight.getType() == Regex.Type.EMPTY) {
-                    return optimizeLeft;
+                if (right.getType() == Regex.Type.EMPTY) {
+                    return left;
                 }
-                regex.setLeft(optimizeLeft);
-                regex.setRight(optimizeRight);
+                regex.setLeft(left);
+                regex.setRight(right);
                 return regex;
             }
             case CONCAT -> {
-                Regex optimizeLeft = optimize(regex.getLeft());
-                Regex optimizeRight = optimize(regex.getRight());
-                if (optimizeLeft.getType() == Regex.Type.EPSILON) {
-                    return optimizeRight;
+                Regex left = optimize(regex.getLeft());
+                Regex right = optimize(regex.getRight());
+                if (left.getType() == Regex.Type.EPSILON) {
+                    return right;
                 }
-                if (optimizeRight.getType() == Regex.Type.EPSILON) {
-                    return optimizeLeft;
+                if (right.getType() == Regex.Type.EPSILON) {
+                    return left;
                 }
-                if (optimizeLeft.getType() == Regex.Type.EMPTY) {
-                    return optimizeLeft;
+                if (left.getType() == Regex.Type.EMPTY) {
+                    return empty;
                 }
-                if (optimizeRight.getType() == Regex.Type.EMPTY) {
-                    return optimizeRight;
+                if (right.getType() == Regex.Type.EMPTY) {
+                    return empty;
                 }
-                regex.setLeft(optimizeLeft);
-                regex.setRight(optimizeRight);
+                regex.setLeft(left);
+                regex.setRight(right);
                 return regex;
             }
             default -> {

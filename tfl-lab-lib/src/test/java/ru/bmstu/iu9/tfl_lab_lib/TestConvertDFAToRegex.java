@@ -6,7 +6,6 @@ import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.*;
 import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertDFAToRegex;
 import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertNFAToDFA;
-import ru.bmstu.iu9.tfl_lab_lib.utils.optimize.OptimizeRegexForEpsilonAndEmpty;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,7 +60,7 @@ public class TestConvertDFAToRegex {
 
         NFA nfa = new NFA(states, symbols, initialState, finalStates, transitionFunctionNFA);
         DFA dfa = ConvertNFAToDFA.convert(nfa);
-        Regex convert = OptimizeRegexForEpsilonAndEmpty.optimize(ConvertDFAToRegex.convert(dfa));
+        Regex convert = ConvertDFAToRegex.convert(dfa);
         log.info(convert.toString());
     }
 
@@ -95,7 +94,7 @@ public class TestConvertDFAToRegex {
 
         NFA nfa = new NFA(states, symbols, initialState, finalStates, transitionFunctionNFA);
         DFA dfa = ConvertNFAToDFA.convert(nfa);
-        Regex convert = OptimizeRegexForEpsilonAndEmpty.optimize(ConvertDFAToRegex.convert(dfa));
+        Regex convert = ConvertDFAToRegex.convert(dfa);
         log.info(convert.toString());
     }
 }

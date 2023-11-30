@@ -7,7 +7,7 @@ import ru.bmstu.iu9.tfl_lab_lib.model.automaton.DFA;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.State;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.Symbol;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.TransitionFunctionDFA;
-import ru.bmstu.iu9.tfl_lab_lib.utils.optimize.OptimizeRegexForEpsilonAndEmpty;
+import ru.bmstu.iu9.tfl_lab_lib.utils.Optimize;
 import java.util.*;
 
 @UtilityClass
@@ -20,7 +20,7 @@ public class ConvertDFAToRegex {
             Regex regex = exclusion(SerializationUtils.clone(dfa), SerializationUtils.clone(dfa.getTransitionFunction()), finalState);
             regexes.add(regex);
         }
-        return OptimizeRegexForEpsilonAndEmpty.optimize(combinateRegex(regexes));
+        return Optimize.optimizeRegexForEpsilonAndEmpty(combinateRegex(regexes));
     }
 
     private Regex combinateRegex(List<Regex> regexes) {
@@ -70,7 +70,7 @@ public class ConvertDFAToRegex {
                             SerializationUtils.clone(transitionFunction).getTableTransition(), state, next);
                     Regex stateState = getTransitionRegex(
                             SerializationUtils.clone(transitionFunction).getTableTransition(), state, state);
-                    Regex regex = OptimizeRegexForEpsilonAndEmpty.optimize(new Regex(
+                    Regex regex = Optimize.optimizeRegexForEpsilonAndEmpty(new Regex(
                             Regex.Type.OR,
                             prevNext,
                             new Regex(
@@ -101,7 +101,7 @@ public class ConvertDFAToRegex {
             }
         }
         if (initialState.equals(finalState)) {
-            return OptimizeRegexForEpsilonAndEmpty.optimize(new Regex(Regex.Type.ASTERISK, getTransitionRegex(
+            return Optimize.optimizeRegexForEpsilonAndEmpty(new Regex(Regex.Type.ASTERISK, getTransitionRegex(
                     SerializationUtils.clone(transitionFunction).getTableTransition(), initialState, initialState)));
         }
         Regex initInit = getTransitionRegex(
@@ -112,7 +112,7 @@ public class ConvertDFAToRegex {
                 SerializationUtils.clone(transitionFunction).getTableTransition(), initialState, finalState);
         Regex finalInit = getTransitionRegex(
                 SerializationUtils.clone(transitionFunction).getTableTransition(), finalState, initialState);
-        return OptimizeRegexForEpsilonAndEmpty.optimize(new Regex(
+        return Optimize.optimizeRegexForEpsilonAndEmpty(new Regex(
                 Regex.Type.CONCAT,
                 new Regex(
                         Regex.Type.ASTERISK,

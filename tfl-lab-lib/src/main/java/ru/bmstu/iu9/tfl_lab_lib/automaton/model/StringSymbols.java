@@ -10,6 +10,14 @@ import java.util.List;
 public class StringSymbols {
     private List<Symbol> symbols;
 
+    public StringSymbols(String string) {
+        List<Symbol> symbols = new ArrayList<>();
+        for (char c : string.toCharArray()) {
+            symbols.add(new Symbol(String.valueOf(c)));
+        }
+        this.symbols = symbols;
+    }
+
     public StringSymbols substring(int startIndex, int endIndex) {
         List<Symbol> newSymbols = new ArrayList<>();
         for (int i = startIndex; i < endIndex; i++) {
@@ -17,6 +25,7 @@ public class StringSymbols {
         }
         return new StringSymbols(newSymbols);
     }
+
     public StringSymbols substring(int index) {
         List<Symbol> newSymbols = new ArrayList<>();
         for (int i = index; i < this.symbols.size(); i++) {
@@ -29,13 +38,13 @@ public class StringSymbols {
         if (symbols.size() < 1) {
             return null;
         }
-        return symbols.get(symbols.size()-1);
+        return symbols.get(symbols.size() - 1);
     }
 
     public StringSymbols getAllExpectLast() {
         if (symbols.size() < 2) {
             return null;
         }
-        return this.substring(symbols.size()-2);
+        return this.substring(symbols.size() - 2);
     }
 }

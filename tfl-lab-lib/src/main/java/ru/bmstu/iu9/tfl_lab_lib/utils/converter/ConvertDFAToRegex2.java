@@ -1,8 +1,8 @@
 package ru.bmstu.iu9.tfl_lab_lib.utils.converter;
 
 import ru.bmstu.iu9.tfl_lab_lib.OptimizeRegex;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.*;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.model.*;
+import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

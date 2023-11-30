@@ -1,4 +1,4 @@
-package ru.bmstu.iu9.tfl_lab_lib.automaton;
+package ru.bmstu.iu9.tfl_lab_lib.model.automaton;
 
 public interface TransitionFunction {
     Object transition(State state, Symbol symbol);

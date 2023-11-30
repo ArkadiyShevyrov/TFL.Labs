@@ -1,8 +1,9 @@
-package ru.bmstu.iu9.tfl_lab_lib.automaton;
+package ru.bmstu.iu9.tfl_lab_lib.model.automaton;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
 import java.io.Serializable;
 
 @Getter

@@ -1,6 +1,6 @@
 package ru.bmstu.iu9.tfl_lab_lib;
 
-import ru.bmstu.iu9.tfl_lab_lib.automaton.Regex;
+import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
 
 public class OptimizeRegex {
     public static Regex optimize(Regex regex) {

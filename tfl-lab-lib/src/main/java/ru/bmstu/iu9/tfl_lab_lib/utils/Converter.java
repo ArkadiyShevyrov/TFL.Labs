@@ -3,9 +3,9 @@ package ru.bmstu.iu9.tfl_lab_lib.utils;
 import lombok.experimental.UtilityClass;
 import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertDFAToRegex2;
 import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertRegexToNFA;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.DFA;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.NFA;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.Regex;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.DFA;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.NFA;
+import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
 
 @UtilityClass
 public class Converter {

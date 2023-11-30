@@ -3,8 +3,8 @@ package ru.bmstu.iu9.tfl_lab_lib;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertRegexToNFA;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.NFA;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.Regex;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.NFA;
+import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j

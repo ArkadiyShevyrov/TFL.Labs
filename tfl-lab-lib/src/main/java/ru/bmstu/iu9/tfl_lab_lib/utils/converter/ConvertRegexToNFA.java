@@ -2,6 +2,8 @@ package ru.bmstu.iu9.tfl_lab_lib.utils.converter;
 
 import lombok.experimental.UtilityClass;
 import ru.bmstu.iu9.tfl_lab_lib.automaton.*;
+import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.*;
 import java.util.HashSet;
 import java.util.Set;
 

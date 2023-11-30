@@ -20,7 +20,7 @@ public class Converter {
     }
 
     public NFA convertRegexToNFA(Regex regex) {
-        return ConvertRegexToNFA.convert(regex);
+        return new ConvertRegexToNFA().convert(regex);
     }
 
     public DFA convertNFAToDFA(NFA nfa) {

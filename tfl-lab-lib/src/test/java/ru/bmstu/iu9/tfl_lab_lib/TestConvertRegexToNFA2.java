@@ -7,6 +7,7 @@ import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.DFA;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.NFA;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.StringSymbols;
+import ru.bmstu.iu9.tfl_lab_lib.utils.Converter;
 import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertDFAToRegex;
 import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertNFAToDFA;
 import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertRegexToNFA;
@@ -37,14 +38,14 @@ public class TestConvertRegexToNFA2 {
                         )
                 )
         );
-        NFA nfa = ConvertRegexToNFA.convert(regex);
+        NFA nfa = Converter.convertRegexToNFA(regex);
         DFA dfa = ConvertNFAToDFA.convert(nfa);
         Language language = new Language(dfa);
         StringSymbols symbols = new StringSymbols("01");
         boolean validString = language.isValidString(symbols);
         Regex convert = ConvertDFAToRegex.convert(dfa);
-        NFA nfa2 = ConvertRegexToNFA.convert(convert);
-        DFA dfa2 = ConvertNFAToDFA.convert(nfa);
+        NFA nfa2 = Converter.convertRegexToNFA(convert);
+        DFA dfa2 = ConvertNFAToDFA.convert(nfa2);
         Language language2 = new Language(dfa2);
         boolean validString2 = language2.isValidString(symbols);
         log.info(convert.toString());

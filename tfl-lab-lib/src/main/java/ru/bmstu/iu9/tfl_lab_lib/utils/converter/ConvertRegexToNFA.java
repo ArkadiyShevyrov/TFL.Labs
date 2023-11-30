@@ -9,10 +9,9 @@ import ru.bmstu.iu9.tfl_lab_lib.model.automaton.TransitionFunctionNFA;
 import java.util.HashSet;
 import java.util.Set;
 
-@UtilityClass
 public class ConvertRegexToNFA {
     private static final Symbol epsilon = new Symbol(Symbol.Type.EPSILON);
-    private static int currentNumber = 0;
+    private int currentNumber = 0;
 
     //    Theorem 3.7. Any language defined by a regular expression can be defined by some finite automaton;
     public NFA convert(Regex regex) {

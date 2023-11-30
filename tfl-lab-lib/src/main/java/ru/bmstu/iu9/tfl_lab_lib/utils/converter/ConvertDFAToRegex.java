@@ -8,6 +8,7 @@ import ru.bmstu.iu9.tfl_lab_lib.model.automaton.State;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.Symbol;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.TransitionFunctionDFA;
 import ru.bmstu.iu9.tfl_lab_lib.utils.Optimize;
+import ru.bmstu.iu9.tfl_lab_lib.utils.RegexUtils;
 import java.util.*;
 
 // TODO: Refactoring
@@ -22,29 +23,7 @@ public class ConvertDFAToRegex {
             Regex regex = exclusion(SerializationUtils.clone(dfa), SerializationUtils.clone(dfa.getTransitionFunction()), finalState);
             regexes.add(regex);
         }
-        return Optimize.optimizeRegexForEpsilonAndEmpty(combinateRegex(regexes));
-    }
-
-    private Regex combinateRegex(List<Regex> regexes) {
-        if (regexes.size() == 0) {
-            return new Regex(Regex.Type.EMPTY);
-        }
-        if (regexes.size() == 1) {
-            return regexes.get(0);
-        }
-        Regex res = new Regex(Regex.Type.OR, regexes.get(0));
-        Regex current = res;
-        for (int i = 1; i < regexes.size(); i++) {
-            Regex regex = regexes.get(i);
-            if (i == regexes.size() - 1) {
-                current.setRight(regex);
-                break;
-            }
-            Regex right = new Regex(Regex.Type.OR, regex);
-            current.setRight(right);
-            current = right;
-        }
-        return res;
+        return Optimize.optimizeRegexForEpsilonAndEmpty(RegexUtils.combinateRegex(regexes));
     }
 
     private Regex exclusion(DFA dfa, TransitionFunctionDFA transitionFunction, State finalState) {
@@ -178,7 +157,7 @@ public class ConvertDFAToRegex {
         Set<Symbol> symbols = transitionMap.keySet();
         symbols.removeIf(symbol -> !transitionMap.get(symbol).equals(two));
         if (symbols.isEmpty()) {
-            return new Regex(Regex.Type.EMPTY);
+            return empty;
         }
         List<Regex> regexes = new ArrayList<>();
         for (Symbol symbol : symbols) {
@@ -187,7 +166,7 @@ public class ConvertDFAToRegex {
                 case SYMBOL -> regexes.add(new Regex(Regex.Type.SYMBOL, symbol.getString()));
             }
         }
-        return combinateRegex(regexes);
+        return RegexUtils.combinateRegex(regexes);
     }
 
     private void removeTransitions(Map<State, Map<Symbol, State>> tableTransition, State fromState, State toState) {

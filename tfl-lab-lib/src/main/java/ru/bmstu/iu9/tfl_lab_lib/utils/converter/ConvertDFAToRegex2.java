@@ -6,6 +6,7 @@ import ru.bmstu.iu9.tfl_lab_lib.model.automaton.State;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.Symbol;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.TransitionFunctionDFA;
 import ru.bmstu.iu9.tfl_lab_lib.utils.Optimize;
+import ru.bmstu.iu9.tfl_lab_lib.utils.RegexUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ public class ConvertDFAToRegex2 {
     private final TransitionFunctionDFA tf;
     private final List<State> states;
     private final State initialState;
-    Set<State> finalStates;
+    private final Set<State> finalStates;
 
     public ConvertDFAToRegex2(DFA dfa) {
         tf = dfa.getTransitionFunction();
@@ -29,29 +30,7 @@ public class ConvertDFAToRegex2 {
         for (State finalState : finalStates) {
             list.add(getRegex(initialState, finalState, states.size() - 1));
         }
-        return combinateRegex(list);
-    }
-
-    private Regex combinateRegex(List<Regex> regexes) {
-        if (regexes.size() == 0) {
-            return new Regex(Regex.Type.EMPTY);
-        }
-        if (regexes.size() == 1) {
-            return regexes.get(0);
-        }
-        Regex res = new Regex(Regex.Type.OR, regexes.get(0));
-        Regex current = res;
-        for (int i = 1; i < regexes.size(); i++) {
-            Regex regex = regexes.get(i);
-            if (i == regexes.size() - 1) {
-                current.setRight(regex);
-                break;
-            }
-            Regex right = new Regex(Regex.Type.OR, regex);
-            current.setRight(right);
-            current = right;
-        }
-        return res;
+        return RegexUtils.combinateRegex(list);
     }
 
     private Regex getRegex(State stateI, State stateJ, int numberK) {
@@ -75,7 +54,7 @@ public class ConvertDFAToRegex2 {
                     }
                 }
             }
-            return Optimize.optimizeRegexForEpsilonAndEmpty(combinateRegex(listRegex));
+            return Optimize.optimizeRegexForEpsilonAndEmpty(RegexUtils.combinateRegex(listRegex));
         } else {
             State stateK = states.get(numberK);
             int numberK1 = numberK - 1;

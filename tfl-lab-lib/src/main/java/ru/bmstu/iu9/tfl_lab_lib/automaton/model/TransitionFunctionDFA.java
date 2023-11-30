@@ -36,11 +36,6 @@ public class TransitionFunctionDFA implements TransitionFunction, Serializable {
         tableTransition.put(stateStart, newMap);
     }
 
-    public void putToTable(State stateStart) {
-        tableTransition.put(stateStart, new HashMap<>());
-    }
-
-
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();

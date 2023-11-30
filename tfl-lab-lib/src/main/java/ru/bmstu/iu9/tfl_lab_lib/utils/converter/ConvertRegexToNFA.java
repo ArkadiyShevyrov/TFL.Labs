@@ -1,9 +1,11 @@
 package ru.bmstu.iu9.tfl_lab_lib.utils.converter;
 
 import lombok.experimental.UtilityClass;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.*;
 import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
-import ru.bmstu.iu9.tfl_lab_lib.model.automaton.*;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.NFA;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.State;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.Symbol;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.TransitionFunctionNFA;
 import java.util.HashSet;
 import java.util.Set;
 

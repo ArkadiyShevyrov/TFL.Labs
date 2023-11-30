@@ -2,15 +2,13 @@ package ru.bmstu.iu9.tfl_lab_lib;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.*;
 import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.*;
 import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertDFAToRegex;
 import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertNFAToDFA;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.model.*;
+import ru.bmstu.iu9.tfl_lab_lib.utils.optimize.OptimizeRegexForEpsilonAndEmpty;
 import java.util.HashSet;
 import java.util.Set;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 public class TestConvertDFAToRegex {
@@ -53,17 +51,17 @@ public class TestConvertDFAToRegex {
 //        DFA dfa = new DFA(states, symbols, initialState, finalStates, transitionFunctionDFA);
 
         TransitionFunctionNFA transitionFunctionNFA = new TransitionFunctionNFA();
-        transitionFunctionNFA.putToTable(stateA , symbol0, stateA);
-        transitionFunctionNFA.putToTable(stateA , symbol1, stateA);
-        transitionFunctionNFA.putToTable(stateA , symbol1, stateB);
-        transitionFunctionNFA.putToTable(stateB , symbol0, stateC);
-        transitionFunctionNFA.putToTable(stateB , symbol1, stateC);
-        transitionFunctionNFA.putToTable(stateC , symbol0, stateD);
-        transitionFunctionNFA.putToTable(stateC , symbol1, stateD);
+        transitionFunctionNFA.putToTable(stateA, symbol0, stateA);
+        transitionFunctionNFA.putToTable(stateA, symbol1, stateA);
+        transitionFunctionNFA.putToTable(stateA, symbol1, stateB);
+        transitionFunctionNFA.putToTable(stateB, symbol0, stateC);
+        transitionFunctionNFA.putToTable(stateB, symbol1, stateC);
+        transitionFunctionNFA.putToTable(stateC, symbol0, stateD);
+        transitionFunctionNFA.putToTable(stateC, symbol1, stateD);
 
         NFA nfa = new NFA(states, symbols, initialState, finalStates, transitionFunctionNFA);
         DFA dfa = ConvertNFAToDFA.convert(nfa);
-        Regex convert = OptimizeRegex.optimize(ConvertDFAToRegex.convert(dfa));
+        Regex convert = OptimizeRegexForEpsilonAndEmpty.optimize(ConvertDFAToRegex.convert(dfa));
         log.info(convert.toString());
     }
 
@@ -89,15 +87,15 @@ public class TestConvertDFAToRegex {
         finalStates.add(stateB);
 
         TransitionFunctionNFA transitionFunctionNFA = new TransitionFunctionNFA();
-        transitionFunctionNFA.putToTable(stateA , symbol1, stateA);
-        transitionFunctionNFA.putToTable(stateA , symbol0, stateB);
-        transitionFunctionNFA.putToTable(stateB , symbol0, stateB);
-        transitionFunctionNFA.putToTable(stateB , symbol1, stateB);
+        transitionFunctionNFA.putToTable(stateA, symbol1, stateA);
+        transitionFunctionNFA.putToTable(stateA, symbol0, stateB);
+        transitionFunctionNFA.putToTable(stateB, symbol0, stateB);
+        transitionFunctionNFA.putToTable(stateB, symbol1, stateB);
 
 
         NFA nfa = new NFA(states, symbols, initialState, finalStates, transitionFunctionNFA);
         DFA dfa = ConvertNFAToDFA.convert(nfa);
-        Regex convert = OptimizeRegex.optimize(ConvertDFAToRegex.convert(dfa));
+        Regex convert = OptimizeRegexForEpsilonAndEmpty.optimize(ConvertDFAToRegex.convert(dfa));
         log.info(convert.toString());
     }
 }

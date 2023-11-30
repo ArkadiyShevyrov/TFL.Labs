@@ -2,11 +2,12 @@ package ru.bmstu.iu9.tfl_lab_lib;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.*;
 import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
-import ru.bmstu.iu9.tfl_lab_lib.model.automaton.*;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.DFA;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.State;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.Symbol;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.TransitionFunctionDFA;
 import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertDFAToRegex2;
-import ru.bmstu.iu9.tfl_lab_lib.automaton.model.*;
 import java.util.HashSet;
 import java.util.Set;
 

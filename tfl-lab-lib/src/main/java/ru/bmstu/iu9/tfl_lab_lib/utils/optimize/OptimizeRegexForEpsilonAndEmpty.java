@@ -1,8 +1,10 @@
-package ru.bmstu.iu9.tfl_lab_lib;
+package ru.bmstu.iu9.tfl_lab_lib.utils.optimize;
 
+import lombok.experimental.UtilityClass;
 import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
 
-public class OptimizeRegex {
+@UtilityClass
+public class OptimizeRegexForEpsilonAndEmpty {
     public static Regex optimize(Regex regex) {
         switch (regex.getType()) {
             case ASTERISK -> {

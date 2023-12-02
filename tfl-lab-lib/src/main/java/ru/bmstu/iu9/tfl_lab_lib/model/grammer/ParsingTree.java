@@ -7,9 +7,37 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class ParsingTree {
-    List<ParsingTree> children;
-    private Terminal terminal;
     private Type type;
+    private List<ParsingTree> children;
+    private Terminal terminal;
+
+    public ParsingTree(List<ParsingTree> children) {
+        this.type = Type.VARIABLE;
+        this.children = children;
+    }
+
+    public ParsingTree(Terminal terminal) {
+        this.type = Type.TERMINAL;
+        this.terminal = terminal;
+    }
+
+    public int length() {
+        switch (type) {
+            case TERMINAL -> {
+                return 1;
+            }
+            case VARIABLE -> {
+                int length = 0;
+                for (ParsingTree parsingTree : children) {
+                    length += parsingTree.length();
+                }
+                return length;
+            }
+            default -> {
+                return 0;
+            }
+        }
+    }
 
     public enum Type {
         VARIABLE,

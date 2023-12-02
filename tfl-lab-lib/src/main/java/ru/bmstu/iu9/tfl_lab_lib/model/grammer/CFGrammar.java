@@ -6,7 +6,8 @@ import java.util.Set;
 
 @Getter
 @AllArgsConstructor
-public class ContextFreeGrammar {
+// ContextFreeGrammar
+public class CFGrammar {
     private Set<Variable> variables;
     private Set<Terminal> terminals;
     private Productions productions;

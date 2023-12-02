@@ -1,11 +1,13 @@
 package ru.bmstu.iu9.tfl_lab_lib;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import ru.bmstu.iu9.tfl_lab_lib.model.grammer.*;
 import ru.bmstu.iu9.tfl_lab_lib.utils.generator.GenerateParsingTree;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 public class TestGenerateParsingTree {
     @Test
     public void testConcat() {
@@ -46,6 +48,7 @@ public class TestGenerateParsingTree {
         CFGrammar cfGrammar = new CFGrammar(variables, terminals, productions, startVariable);
         GenerateParsingTree generateParsingTree = new GenerateParsingTree(cfGrammar);
         ParsingTree generate = generateParsingTree.generate(terminalString);
-        System.out.println();
+        String s = generate.drawTree(generate);
+        log.info(s);
     }
 }

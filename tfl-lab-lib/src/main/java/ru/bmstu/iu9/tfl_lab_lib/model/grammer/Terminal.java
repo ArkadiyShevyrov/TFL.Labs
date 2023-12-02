@@ -22,7 +22,10 @@ public class Terminal implements GrammarUnit {
 
     @Override
     public String toString() {
-        return value;
+        return switch (type) {
+            case EPSILON -> "ε";
+            case STRING -> value;
+        };
     }
 
     public enum Type {

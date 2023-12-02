@@ -52,7 +52,7 @@ public class GenerateParsingTree {
                     children.add(child);
                 }
                 if (validGrammarString) {
-                    return new ParsingTree(children);
+                    return new ParsingTree(variableStart, children);
                 }
             }
         }

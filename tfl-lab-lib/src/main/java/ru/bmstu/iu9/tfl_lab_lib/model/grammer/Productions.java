@@ -18,4 +18,10 @@ public class Productions {
                 .computeIfAbsent(variable, k -> new ArrayList<>())
                 .add(grammarString);
     }
+
+    public void putToTable(Variable variable, GrammarString... grammarStrings) {
+        for (GrammarString grammarString : grammarStrings) {
+            putToTable(variable, grammarString);
+        }
+    }
 }

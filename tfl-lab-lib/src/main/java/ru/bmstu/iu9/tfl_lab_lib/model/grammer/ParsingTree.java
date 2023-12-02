@@ -24,7 +24,11 @@ public class ParsingTree {
     public int length() {
         switch (type) {
             case TERMINAL -> {
-                return 1;
+                if (terminal.getType() == Terminal.Type.STRING) {
+                    return 1;
+                } else {
+                    return 0;
+                }
             }
             case VARIABLE -> {
                 int length = 0;

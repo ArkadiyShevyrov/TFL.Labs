@@ -25,13 +25,20 @@ public class GenerateParsingTree {
                 for (GrammarUnit grammarUnit : grammarString.getGrammarUnits()) {
                     ParsingTree child = null;
                     if (grammarUnit instanceof Terminal terminal) {
-                        Terminal first = terminalString.get(currentIndex);
-                        if (terminal.equals(first)) {
+                        if (terminal.getType() == Terminal.Type.EPSILON) {
                             child = new ParsingTree(terminal);
-                            currentIndex++;
                         } else {
-                            validGrammarString = false;
-                            break;
+                            if (terminalString.length() == 0) {
+                                validGrammarString = false;
+                                break;
+                            }
+                            Terminal first = terminalString.get(currentIndex);
+                            if (terminal.equals(first)) {
+                                child = new ParsingTree(terminal);
+                            } else {
+                                validGrammarString = false;
+                                break;
+                            }
                         }
                     } else if (grammarUnit instanceof Variable variable) {
                         child = deriveStringsLeft(variable, terminalString.substring(currentIndex));
@@ -44,7 +51,7 @@ public class GenerateParsingTree {
                     currentIndex += child.length();
                     children.add(child);
                 }
-                if (validGrammarString && currentIndex == terminalString.length()) {
+                if (validGrammarString) {
                     return new ParsingTree(children);
                 }
             }

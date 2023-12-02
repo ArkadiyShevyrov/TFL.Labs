@@ -7,7 +7,7 @@ import java.util.*;
 @Getter
 @AllArgsConstructor
 public class Productions {
-    private HashMap<Variable, Set<GrammarString>> tableProductions;
+    private HashMap<Variable, List<GrammarString>> tableProductions;
 
     public Productions() {
         tableProductions = new HashMap<>();
@@ -15,7 +15,7 @@ public class Productions {
 
     public void putToTable(Variable variable, GrammarString grammarString) {
         tableProductions
-                .computeIfAbsent(variable, k -> new HashSet<>())
+                .computeIfAbsent(variable, k -> new ArrayList<>())
                 .add(grammarString);
     }
 }

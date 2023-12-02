@@ -42,6 +42,7 @@ public class GenerateParsingTree {
                     }
                     assert child != null;
                     currentIndex += child.length();
+                    children.add(child);
                 }
                 if (validGrammarString && currentIndex == terminalString.length()) {
                     return new ParsingTree(children);

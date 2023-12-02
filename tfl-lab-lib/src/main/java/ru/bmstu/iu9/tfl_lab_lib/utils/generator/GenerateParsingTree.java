@@ -17,9 +17,7 @@ public class GenerateParsingTree {
     }
 
     public GenerateParsingTree() {
-        this.productions = productions;
-        this.startVariable = startVariable;
-        this.s =
+        this.productions =
 
     }
 

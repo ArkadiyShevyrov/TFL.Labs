@@ -70,7 +70,7 @@ public class ParsingTree {
                     if (i == 0) {
                         builder.append(printTree(tree.children.get(0), prefix + (isFirst ? "│   " : "    "), tree.children.size() > 1));
                     } else {
-                        builder.append(printTree(tree.children.get(i), prefix + (isFirst ? "│   " : "    "), false));
+                        builder.append(printTree(tree.children.get(i), prefix + (isFirst ? "│   " : "    "), i != tree.children.size()-1));
                     }
                 }
             }

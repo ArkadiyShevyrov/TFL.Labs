@@ -23,6 +23,7 @@ public class SSNF {
             default -> throw new RuntimeException();
         }
     }
+
     public Tree ss(Tree tree) {
         switch (tree.getType()) {
             case SYMBOL -> {
@@ -36,6 +37,10 @@ public class SSNF {
                 Tree treeChildRight = tree.getRight();
                 if (treeChildLeft.getType() == Tree.Type.ASTERISK
                         && treeChildRight.getType() == Tree.Type.ASTERISK) {
+                    return new Tree(Tree.Type.OR, ss(tree.getLeft()), ss(tree.getRight()));
+                }
+                if (treeChildLeft.getType() == Tree.Type.ASTERISK
+                        && treeChildRight.getType() == Tree.Type.CONCAT && treeChildRight.getLeft().getType() == Tree.Type.ASTERISK) {
                     return new Tree(Tree.Type.OR, ss(tree.getLeft()), ss(tree.getRight()));
                 }
                 return new Tree(Tree.Type.CONCAT, ssnf(tree.getLeft()),

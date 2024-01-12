@@ -71,6 +71,12 @@ public class TransitionFunctionNFA implements TransitionFunction {
         }
         tableTransition.put(stateStart, newMap);
     }
+    public void putToTable(State stateStart) {
+        Map<Symbol, Set<State>> oldMap = tableTransition.get(stateStart);
+        Map<Symbol, Set<State>> newMap = Objects.requireNonNullElseGet(oldMap, HashMap::new);
+
+        tableTransition.put(stateStart, newMap);
+    }
 
     public void putToTable(State stateStart, Symbol symbol, State... stateEnds) {
         putToTable(stateStart, symbol, new HashSet<>(Arrays.asList(stateEnds)));

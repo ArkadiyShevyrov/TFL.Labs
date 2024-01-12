@@ -78,6 +78,16 @@ public class ConvertRegexToFAGlushkov {
                 transitionFunctionNFA.putToTable(stateStart, symbol, stateNext);
             }
         }
+        for (RegexLin regexLin : combo.getFirsts()) {
+            State state = new State(regexLin.toString());
+            transitionFunctionNFA.putToTable(state);
+        }
+        for (RegexLin regexLin : combo.getLasts()) {
+            State state = new State(regexLin.toString());
+            transitionFunctionNFA.putToTable(state);
+        }
+
+        states.addAll(transitionFunctionNFA.getTableTransition().keySet());
 
         return new NFA(states, symbols, initialState, finalStates, transitionFunctionNFA);
     }
@@ -86,8 +96,8 @@ public class ConvertRegexToFAGlushkov {
         switch (regex.getType()) {
             case SYMBOL -> {
                 return new Combo(
-                        List.of(regex),
-                        List.of(regex),
+                        new ArrayList<>(List.of(regex)),
+                        new ArrayList<>(List.of(regex)),
                         new HashMap<>());
             }
             case OR -> {

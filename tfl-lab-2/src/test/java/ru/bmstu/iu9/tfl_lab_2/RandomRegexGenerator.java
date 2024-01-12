@@ -14,7 +14,9 @@ import static ru.bmstu.iu9.tfl_lab_lib.model.Regex.Type.*;
 @UtilityClass
 public class RandomRegexGenerator {
     public static void main(String[] args) {
-        log.info(generateRandomRegex(5, 10, 25).toString());
+        for (int i = 0; i < 100; i++) {
+            log.info(generateRandomRegex(5, 10, 250).toString());
+        }
     }
 
     public Regex generateRandomRegex(int alphabetSize, int starHeight, int maxLetters) {

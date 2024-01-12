@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.State;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.Symbol;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.TransitionFunctionNFA;
+import ru.bmstu.iu9.tfl_lab_lib.utils.mathe.MatrixPower;
 import java.util.*;
 
 @Slf4j
@@ -24,10 +25,14 @@ public class ConvertTableTransitionToReachabilityMatrix {
         transitionFunctionNFA.putToTable(state3, symbolB, state2);
         transitionFunctionNFA.putToTable(state4, symbolA, state3);
         transitionFunctionNFA.putToTable(state2);
-        convert(transitionFunctionNFA.getTableTransition());
+        convert2(transitionFunctionNFA.getTableTransition());
     }
 
     public Map<State, Set<State>> convert(Map<State, Map<Symbol, Set<State>>> tableTransition) {
+        return s1(tableTransition);
+    }
+
+    public Map<State, Set<State>> convert2(Map<State, Map<Symbol, Set<State>>> tableTransition) {
         Map<State, Set<State>> reachabilityMatrix = new HashMap<>();
 
         Map<State, Set<State>> stateSetMap = s1(tableTransition);

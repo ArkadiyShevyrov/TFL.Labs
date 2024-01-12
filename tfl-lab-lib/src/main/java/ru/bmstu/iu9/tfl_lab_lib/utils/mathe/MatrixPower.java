@@ -1,4 +1,4 @@
-package ru.bmstu.iu9.tfl_lab_lib.utils.converter;
+package ru.bmstu.iu9.tfl_lab_lib.utils.mathe;
 
 import java.util.List;
 

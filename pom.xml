@@ -6,6 +6,8 @@
 
     <modules>
         <module>tfl-lab-1</module>
+        <module>tfl-lab-2</module>
+        <module>tfl-lab-lib</module>
     </modules>
 
     <parent>

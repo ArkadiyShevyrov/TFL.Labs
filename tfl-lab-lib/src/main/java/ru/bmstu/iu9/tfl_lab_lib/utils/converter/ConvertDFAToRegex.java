@@ -1,0 +1,176 @@
+package ru.bmstu.iu9.tfl_lab_lib.utils.converter;
+
+import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.SerializationUtils;
+import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.DFA;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.State;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.Symbol;
+import ru.bmstu.iu9.tfl_lab_lib.model.automaton.TransitionFunctionDFA;
+import ru.bmstu.iu9.tfl_lab_lib.utils.Optimize;
+import ru.bmstu.iu9.tfl_lab_lib.utils.RegexUtils;
+import java.util.*;
+
+// TODO: Refactoring
+@UtilityClass
+public class ConvertDFAToRegex {
+    private final Regex empty = new Regex(Regex.Type.EMPTY);
+
+    public Regex convert(DFA dfa) {
+        List<Regex> regexes = new ArrayList<>();
+        Set<State> finalStates = dfa.getFinalStates();
+        for (State finalState : finalStates) {
+            Regex regex = exclusion(SerializationUtils.clone(dfa), SerializationUtils.clone(dfa.getTransitionFunction()), finalState);
+            regexes.add(regex);
+        }
+        return Optimize.optimizeRegexForEpsilonAndEmpty(RegexUtils.combinateRegex(regexes));
+    }
+
+    private Regex exclusion(DFA dfa, TransitionFunctionDFA transitionFunction, State finalState) {
+        Set<State> states = dfa.getStates();
+        State initialState = dfa.getInitialState();
+        Set<State> statesOtherInitialAndFinal = getStatesOtherInitialAndFinal(states, initialState, finalState);
+        Map<State, Map<Symbol, State>> tableTransition = transitionFunction.getTableTransition();
+
+        for (State state : statesOtherInitialAndFinal) {
+            Set<State> previousStates = getPreviousStates(tableTransition, state);
+            Set<State> nextStates = getNextStates(tableTransition, state);
+            if (nextStates.size() == 0) {
+                for (State prev : previousStates) {
+                    removeTransitions(tableTransition, prev, state);
+                }
+            }
+            for (State prev : previousStates) {
+                for (State next : nextStates) {
+                    Regex prevNext = getTransitionRegex(
+                            SerializationUtils.clone(transitionFunction).getTableTransition(), prev, next);
+                    removeTransitions(tableTransition, prev, next);
+                    Regex prevState = getTransitionRegex(
+                            SerializationUtils.clone(transitionFunction).getTableTransition(), prev, state);
+                    Regex stateNext = getTransitionRegex(
+                            SerializationUtils.clone(transitionFunction).getTableTransition(), state, next);
+                    Regex stateState = getTransitionRegex(
+                            SerializationUtils.clone(transitionFunction).getTableTransition(), state, state);
+                    Regex regex = Optimize.optimizeRegexForEpsilonAndEmpty(new Regex(
+                            Regex.Type.OR,
+                            prevNext,
+                            new Regex(
+                                    Regex.Type.CONCAT,
+                                    prevState,
+                                    new Regex(
+                                            Regex.Type.CONCAT,
+                                            new Regex(
+                                                    Regex.Type.ASTERISK,
+                                                    stateState
+                                            ),
+                                            stateNext
+                                    )
+                            )
+                    ));
+                    if (regex.getType() == Regex.Type.EMPTY) {
+                        continue;
+                    }
+                    transitionFunction.putToTable(prev, new Symbol(Symbol.Type.REGEX, regex), next);
+                }
+            }
+            for (State prev : previousStates) {
+                for (State next : nextStates) {
+                    removeTransitions(tableTransition, prev, state);
+                    removeTransitions(tableTransition, state, next);
+                    removeTransitions(tableTransition, state, state);
+                }
+            }
+        }
+        if (initialState.equals(finalState)) {
+            return Optimize.optimizeRegexForEpsilonAndEmpty(new Regex(Regex.Type.ASTERISK, getTransitionRegex(
+                    SerializationUtils.clone(transitionFunction).getTableTransition(), initialState, initialState)));
+        }
+        Regex initInit = getTransitionRegex(
+                SerializationUtils.clone(transitionFunction).getTableTransition(), initialState, initialState);
+        Regex finalFinal = getTransitionRegex(
+                SerializationUtils.clone(transitionFunction).getTableTransition(), finalState, finalState);
+        Regex initFinal = getTransitionRegex(
+                SerializationUtils.clone(transitionFunction).getTableTransition(), initialState, finalState);
+        Regex finalInit = getTransitionRegex(
+                SerializationUtils.clone(transitionFunction).getTableTransition(), finalState, initialState);
+        return Optimize.optimizeRegexForEpsilonAndEmpty(new Regex(
+                Regex.Type.CONCAT,
+                new Regex(
+                        Regex.Type.ASTERISK,
+                        new Regex(
+                                Regex.Type.OR,
+                                initInit,
+                                new Regex(
+                                        Regex.Type.CONCAT,
+                                        initFinal,
+                                        new Regex(
+                                                Regex.Type.CONCAT,
+                                                new Regex(
+                                                        Regex.Type.ASTERISK,
+                                                        finalFinal
+                                                ),
+                                                finalInit
+                                        )
+                                )
+                        )
+                ),
+                new Regex(
+                        Regex.Type.CONCAT,
+                        initFinal,
+                        new Regex(
+                                Regex.Type.ASTERISK,
+                                finalFinal
+                        )
+                )
+        ));
+    }
+
+    private Set<State> getStatesOtherInitialAndFinal(Set<State> states, State initialState, State finalState) {
+        states.remove(initialState);
+        states.remove(finalState);
+        return states;
+    }
+
+
+    private static Set<State> getPreviousStates(Map<State, Map<Symbol, State>> tableTransition, State s) {
+        Set<State> previousStates = new HashSet<>();
+        for (State key : tableTransition.keySet()) {
+            Map<Symbol, State> transitions = tableTransition.get(key);
+            if (transitions.containsValue(s)) {
+                previousStates.add(key);
+            }
+        }
+        return previousStates;
+    }
+
+    private static Set<State> getNextStates(Map<State, Map<Symbol, State>> tableTransition, State s) {
+        Set<State> nextStates = new HashSet<>();
+        if (tableTransition.containsKey(s)) {
+            Map<Symbol, State> transitions = tableTransition.get(s);
+            nextStates.addAll(transitions.values());
+        }
+        return nextStates;
+    }
+
+    private static Regex getTransitionRegex(Map<State, Map<Symbol, State>> tableTransition, State one, State two) {
+        Map<Symbol, State> transitionMap = tableTransition.get(one);
+        Set<Symbol> symbols = transitionMap.keySet();
+        symbols.removeIf(symbol -> !transitionMap.get(symbol).equals(two));
+        if (symbols.isEmpty()) {
+            return empty;
+        }
+        List<Regex> regexes = new ArrayList<>();
+        for (Symbol symbol : symbols) {
+            switch (symbol.getType()) {
+                case REGEX -> regexes.add(symbol.getRegex());
+                case SYMBOL -> regexes.add(new Regex(Regex.Type.SYMBOL, symbol.getString()));
+            }
+        }
+        return RegexUtils.combinateRegex(regexes);
+    }
+
+    private void removeTransitions(Map<State, Map<Symbol, State>> tableTransition, State fromState, State toState) {
+        Map<Symbol, State> transitionsFromState = tableTransition.get(fromState);
+        transitionsFromState.entrySet().removeIf(entry -> entry.getValue().equals(toState));
+    }
+}

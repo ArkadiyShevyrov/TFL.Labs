@@ -60,6 +60,22 @@ public class TransitionFunctionNFA implements TransitionFunction {
         return states;
     }
 
+    public Set<State> epsilonClosureWithVisited(Set<State> visited, State state) {
+        Set<State> states = new HashSet<>();
+        states.add(state);
+        Set<State> eStates = transition(state, epsilon);
+        if (eStates != null) {
+            for (State eState : eStates) {
+                if (visited.contains(eState)) {
+                    continue;
+                }
+                visited.add(eState);
+                states.addAll(epsilonClosureWithVisited(visited,eState));
+            }
+        }
+        return states;
+    }
+
     public void putToTable(State stateStart, Symbol symbol, Set<State> stateEnd) {
         Map<Symbol, Set<State>> oldMap = tableTransition.get(stateStart);
         Map<Symbol, Set<State>> newMap = Objects.requireNonNullElseGet(oldMap, HashMap::new);

@@ -10,6 +10,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class Symbol implements Serializable {
+    public static Symbol epsilon = new Symbol(Type.EPSILON);
     private String string;
     private Type type;
     private Regex regex;

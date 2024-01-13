@@ -44,7 +44,7 @@ public class LR0 {
 
     public ResultLR0 lr0(CFGrammar grammar, TerminalString terminalString) {
         CFGrammar replenishGrammar = replenishGrammar(grammar);
-        FA fa = buildAutomaton(replenishGrammar);
+        DFA dfa = buildAutomaton(replenishGrammar);
         Map<State, Map<GrammarUnit, ParsingTableEntry>> stateMapMap = buildParsingTable();
         ParsingTree parse = parse();
         return new ResultLR0(parse);
@@ -66,9 +66,51 @@ public class LR0 {
         return new CFGrammar(variables, terminals, productions, newStartVariable);
     }
 
-    public FA buildAutomaton(CFGrammar grammar) {
+    public DFA buildAutomaton(CFGrammar grammar) {
         NFA nfa = buildNFA(grammar);
-        return null;
+        return buildDFA(nfa);
+    }
+
+    private DFA buildDFA(NFA nfa) {
+        Set<State> states = new HashSet<>();
+        Set<Symbol> symbols = new HashSet<>();
+        Set<State> finalStates = new HashSet<>();
+        TransitionFunctionDFA transitionFunction = new TransitionFunctionDFA();
+
+
+        State initialState = nfa.getInitialState();
+        Set<State> stateSet = nfa.getTransitionFunction().epsilonClosureWithVisited(new HashSet<>(),initialState);
+
+        State startState = new State(stateSet);
+        states.add(startState);
+
+        Stack<State> stack = new Stack<>();
+        stack.add(startState);
+        Set<State> visited = new HashSet<>();
+        while (!stack.isEmpty()) {
+            State currentState = stack.pop();
+            visited.add(currentState);
+            for (Symbol symbol : nfa.getSymbols()) {
+                Set<State> nextStates = new HashSet<>();
+                for (State state : currentState.getValue().getSetState()) {
+                    nextStates.addAll(nfa.getTransitionFunction().transition(state, symbol));
+                }
+                if (nextStates.isEmpty()) {
+                    continue;
+                }
+                for (State state : nextStates) {
+                    nextStates.addAll(nfa.getTransitionFunction().epsilonClosureWithVisited(new HashSet<>(),state));
+                }
+                State nextState = new State(nextStates);
+                states.add(nextState);
+                transitionFunction.putToTable(currentState, symbol, nextState);
+                if (!visited.contains(nextState)) {
+                    stack.add(nextState);
+                }
+            }
+        }
+
+        return new DFA(states, symbols, startState, finalStates, transitionFunction);
     }
 
     private NFA buildNFA(CFGrammar grammar) {
@@ -122,14 +164,11 @@ public class LR0 {
                         states.add(nextEpsilonState);
                         Symbol epsilon = new Symbol(Symbol.Type.EPSILON);
                         transitionFunction.putToTable(currentState, epsilon, nextEpsilonState);
-                        symbols.add(epsilon);
                         if (!posetil.contains(nextEpsilon)) {
                             stack.add(nextEpsilon);
                         }
                     }
                 }
-            } else {
-                finalStates.add(currentState);
             }
         }
         System.out.println();
@@ -148,11 +187,10 @@ public class LR0 {
     }
 
     @Getter
-    @EqualsAndHashCode
+    @EqualsAndHashCode(callSuper = false)
     class StateValueGrammar extends StateValue {
         private Variable variable;
         private GrammarString grammarString;
-
         private int currentIndex;
 
         public StateValueGrammar(Set<State> setState) {

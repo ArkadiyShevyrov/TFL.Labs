@@ -14,6 +14,10 @@ public class GrammarString {
         this.grammarUnits = Arrays.stream(grammarUnits).toList();
     }
 
+    public int size() {
+        return grammarUnits.size();
+    }
+
     @Override
     public String toString() {
         return Arrays.toString(grammarUnits.toArray());

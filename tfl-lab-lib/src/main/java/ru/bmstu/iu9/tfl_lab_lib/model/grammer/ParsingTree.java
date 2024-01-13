@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class ParsingTree {
+public class ParsingTree implements GrammarUnit{
     private Type type;
     private List<ParsingTree> children;
     private Terminal terminal;

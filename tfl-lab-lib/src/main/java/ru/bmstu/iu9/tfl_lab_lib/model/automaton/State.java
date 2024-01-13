@@ -15,7 +15,7 @@ public class State implements Serializable {
     private StateValue value;
 
     public State(String value) {
-        this.value = new StateValue(StateValue.Type.STRING, value);
+        this.value = new StateValue(StateValue.Type.VALUE, value);
     }
 
     public State(Set<State> setState) {

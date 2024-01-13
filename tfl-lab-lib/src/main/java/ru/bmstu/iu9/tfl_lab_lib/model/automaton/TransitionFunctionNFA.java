@@ -95,8 +95,7 @@ public class TransitionFunctionNFA implements TransitionFunction {
             for (Map.Entry<Symbol, Set<State>> innerEntry : transitionMap.entrySet()) {
                 Symbol transitionSymbol = innerEntry.getKey();
                 Set<State> destinationStates = innerEntry.getValue();
-                stringBuilder
-                        .append(currentState)
+                stringBuilder.append("{").append(currentState).append("}")
                         .append(" -> ")
                         .append(transitionSymbol)
                         .append(" -> ")

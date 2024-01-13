@@ -45,7 +45,7 @@ public class LR0 {
     public ResultLR0 lr0(CFGrammar grammar, TerminalString terminalString) {
         CFGrammar replenishGrammar = replenishGrammar(grammar);
         DFA dfa = buildAutomaton(replenishGrammar);
-        Map<State, Map<GrammarUnit, ParsingTableEntry>> stateMapMap = buildParsingTable();
+//        Map<State, Map<GrammarUnit, ParsingTableEntry>> stateMapMap = buildParsingTable(dfa);
         ParsingTree parse = parse();
         return new ResultLR0(parse);
     }
@@ -146,7 +146,7 @@ public class LR0 {
 
                 StateValueGrammar next = new StateValueGrammar(
                         current.variable, current.grammarString, current.currentIndex + 1);
-                Symbol symbol = new Symbol(grammarUnit.toString());
+                SymbolGrammar symbol = new SymbolGrammar(grammarUnit);
                 State nextState = new State(next);
                 states.add(nextState);
                 transitionFunction.putToTable(currentState, symbol, nextState);
@@ -176,14 +176,44 @@ public class LR0 {
         return new NFA(states,symbols,startState,finalStates,transitionFunction);
     }
 
-    public Map<State, Map<GrammarUnit, ParsingTableEntry>> buildParsingTable() {
-        return null;
+    public Map<State, Map<SymbolGrammar, ParsingTableEntry>> buildParsingTable(DFA dfa) {
+        Map<State, Map<SymbolGrammar, ParsingTableEntry>> table = new HashMap<>();
 
+        for (State state : dfa.getStates()) {
+            Map<SymbolGrammar, ParsingTableEntry> map = new HashMap<>();
+            for (Symbol symbol : dfa.getSymbols()) {
+                State transition = dfa.getTransitionFunction().transition(state, symbol);
+                if (transition == null) {
+                    continue;
+                }
+                if (symbol instanceof SymbolGrammar symbolGrammar) {
+                    GrammarUnit value = symbolGrammar.getValue();
+                    if (value instanceof Terminal) {
+                        map.put(symbolGrammar, new ParsingTableEntry());
+                    } else {
+                        map.put(symbolGrammar, new ParsingTableEntry());
+                    }
+                }
+            }
+            table.put(state, map);
+        }
+
+        return table;
     }
 
     public ParsingTree parse() {
         return null;
 
+    }
+
+    @Getter
+    @EqualsAndHashCode(callSuper = false)
+    class SymbolGrammar extends Symbol{
+        GrammarUnit value;
+        public SymbolGrammar(GrammarUnit value) {
+            super(Type.VALUE);
+            this.value = value;
+        }
     }
 
     @Getter

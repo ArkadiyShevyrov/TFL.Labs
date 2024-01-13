@@ -50,6 +50,7 @@ public class Symbol implements Serializable {
     public enum Type {
         SYMBOL,
         EPSILON,
-        REGEX
+        REGEX,
+        VALUE
     }
 }

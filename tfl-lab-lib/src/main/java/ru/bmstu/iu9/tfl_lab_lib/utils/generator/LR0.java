@@ -48,7 +48,7 @@ public class LR0 {
         DFA dfa = buildAutomaton(replenishGrammar);
         Map<Variable, Set<Terminal>> follows = GrammarFollow.constructFollow(replenishGrammar);
         Map<State, Map<SymbolGrammar, ParsingTableEntry>> stateMapMap = buildParsingTable(dfa, follows);
-        ParsingTree parse = parse();
+        ParsingTree parse = parse(stateMapMap);
         return new ResultLR0(parse);
     }
 
@@ -237,7 +237,7 @@ public class LR0 {
         return null;
     }
 
-    public ParsingTree parse() {
+    public ParsingTree parse(Map<State, Map<SymbolGrammar, ParsingTableEntry>> stateMapMap) {
         return null;
 
     }

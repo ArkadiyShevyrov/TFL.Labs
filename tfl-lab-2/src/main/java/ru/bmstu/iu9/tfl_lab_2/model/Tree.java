@@ -64,6 +64,10 @@ public class Tree implements Serializable {
                         left.getType() != Type.OR) {
                     return left + "(" + right + ")";
                 }
+                if (left.getType() == Type.OR &&
+                        right.getType() == Type.OR) {
+                    return "(" + left.getType() + ")" + "(" + right + ")";
+                }
                 return left + "" + right;
             }
             case SYMBOL -> {

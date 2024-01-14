@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.*;
 import ru.bmstu.iu9.tfl_lab_lib.model.grammer.*;
+import ru.bmstu.iu9.tfl_lab_lib.utils.grammar.GrammarFollow;
 import java.util.*;
 
 @UtilityClass
@@ -45,7 +46,8 @@ public class LR0 {
     public ResultLR0 lr0(CFGrammar grammar, TerminalString terminalString) {
         CFGrammar replenishGrammar = replenishGrammar(grammar);
         DFA dfa = buildAutomaton(replenishGrammar);
-//        Map<State, Map<GrammarUnit, ParsingTableEntry>> stateMapMap = buildParsingTable(dfa);
+        Map<Variable, Set<Terminal>> follows = GrammarFollow.constructFollow(replenishGrammar);
+        Map<State, Map<SymbolGrammar, ParsingTableEntry>> stateMapMap = buildParsingTable(dfa, follows);
         ParsingTree parse = parse();
         return new ResultLR0(parse);
     }
@@ -79,7 +81,7 @@ public class LR0 {
 
 
         State initialState = nfa.getInitialState();
-        Set<State> stateSet = nfa.getTransitionFunction().epsilonClosureWithVisited(new HashSet<>(),initialState);
+        Set<State> stateSet = nfa.getTransitionFunction().epsilonClosureWithVisited(new HashSet<>(), initialState);
 
         State startState = new State(stateSet);
         states.add(startState);
@@ -99,10 +101,11 @@ public class LR0 {
                     continue;
                 }
                 for (State state : nextStates) {
-                    nextStates.addAll(nfa.getTransitionFunction().epsilonClosureWithVisited(new HashSet<>(),state));
+                    nextStates.addAll(nfa.getTransitionFunction().epsilonClosureWithVisited(new HashSet<>(), state));
                 }
                 State nextState = new State(nextStates);
                 states.add(nextState);
+                symbols.add(symbol);
                 transitionFunction.putToTable(currentState, symbol, nextState);
                 if (!visited.contains(nextState)) {
                     stack.add(nextState);
@@ -173,10 +176,10 @@ public class LR0 {
         }
         System.out.println();
 
-        return new NFA(states,symbols,startState,finalStates,transitionFunction);
+        return new NFA(states, symbols, startState, finalStates, transitionFunction);
     }
 
-    public Map<State, Map<SymbolGrammar, ParsingTableEntry>> buildParsingTable(DFA dfa) {
+    public Map<State, Map<SymbolGrammar, ParsingTableEntry>> buildParsingTable(DFA dfa, Map<Variable, Set<Terminal>> followGrammar) {
         Map<State, Map<SymbolGrammar, ParsingTableEntry>> table = new HashMap<>();
 
         for (State state : dfa.getStates()) {
@@ -189,16 +192,49 @@ public class LR0 {
                 if (symbol instanceof SymbolGrammar symbolGrammar) {
                     GrammarUnit value = symbolGrammar.getValue();
                     if (value instanceof Terminal) {
-                        map.put(symbolGrammar, new ParsingTableEntry());
+                        map.put(symbolGrammar, new ParsingTableEntry(ParsingTableEntry.Type.SHIFT, transition));
                     } else {
-                        map.put(symbolGrammar, new ParsingTableEntry());
+                        map.put(symbolGrammar, new ParsingTableEntry(ParsingTableEntry.Type.STATE, transition));
                     }
+                }
+            }
+            StateValueGrammar stateValueGrammar = getStateValueGrammar(state);
+            if (stateValueGrammar != null) {
+                Variable variable = stateValueGrammar.getVariable();
+                List<SymbolGrammar> symbolGrammars = followGrammar.get(variable).stream().map(SymbolGrammar::new).toList();
+                for (SymbolGrammar symbolGrammar : symbolGrammars) {
+                    map.put(symbolGrammar, new ParsingTableEntry(ParsingTableEntry.Type.REDUCE, variable, stateValueGrammar.getGrammarString()));
                 }
             }
             table.put(state, map);
         }
 
         return table;
+    }
+
+    private boolean isDotLast(State state) {
+        Set<State> setState = state.getValue().getSetState();
+        for (State stateLocal : setState) {
+            StateValue value = stateLocal.getValue();
+            if (value instanceof StateValueGrammar stateValueGrammar) {
+                if (stateValueGrammar.currentIndex == stateValueGrammar.grammarString.size()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    private StateValueGrammar getStateValueGrammar(State state) {
+        Set<State> setState = state.getValue().getSetState();
+        for (State stateLocal : setState) {
+            StateValue value = stateLocal.getValue();
+            if (value instanceof StateValueGrammar stateValueGrammar) {
+                if (stateValueGrammar.currentIndex == stateValueGrammar.grammarString.size()) {
+                    return stateValueGrammar;
+                }
+            }
+        }
+        return null;
     }
 
     public ParsingTree parse() {
@@ -208,11 +244,20 @@ public class LR0 {
 
     @Getter
     @EqualsAndHashCode(callSuper = false)
-    class SymbolGrammar extends Symbol{
-        GrammarUnit value;
+    class SymbolGrammar extends Symbol {
+        private final GrammarUnit value;
+
         public SymbolGrammar(GrammarUnit value) {
             super(Type.VALUE);
             this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            if (super.getType() == Type.VALUE) {
+                return value.toString();
+            }
+            return super.toString();
         }
     }
 
@@ -260,8 +305,31 @@ public class LR0 {
         }
     }
 
+    @Getter
     public static class ParsingTableEntry {
+        private Type type;
 
+        private State state;
+
+        private Variable variable;
+        private GrammarString grammarString;
+
+        public ParsingTableEntry(Type type, State state) {
+            this.type = type;
+            this.state = state;
+        }
+
+        public ParsingTableEntry(Type type, Variable variable, GrammarString grammarString) {
+            this.type = type;
+            this.variable = variable;
+            this.grammarString = grammarString;
+        }
+
+        enum Type {
+            STATE,
+            SHIFT,
+            REDUCE
+        }
     }
 
     @AllArgsConstructor

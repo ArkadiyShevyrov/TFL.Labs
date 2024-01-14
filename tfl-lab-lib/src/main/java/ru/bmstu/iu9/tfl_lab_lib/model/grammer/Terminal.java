@@ -8,6 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class Terminal implements GrammarUnit {
+    public static final Terminal epsilon = new Terminal(Type.EPSILON);
+    public static final Terminal endString = new Terminal(Type.END_STRING);
     private String value;
     private Type type;
 
@@ -25,11 +27,13 @@ public class Terminal implements GrammarUnit {
         return switch (type) {
             case EPSILON -> "ε";
             case STRING -> value;
+            case END_STRING -> "&";
         };
     }
 
     public enum Type {
         STRING,
-        EPSILON
+        EPSILON,
+        END_STRING
     }
 }

@@ -1,0 +1,7 @@
+// Стек до шага 1
+digraph {
+	subgraph cluster_1 {
+		label="Step 1"
+		step1_node0 [label=S]
+	}
+}

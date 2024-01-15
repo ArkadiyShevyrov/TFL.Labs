@@ -40,7 +40,9 @@ public class LR0 {
                 new GrammarString(terminalOpen, variableE, terminalClose));
 
         CFGrammar cfGrammar = new CFGrammar(variables, terminals, productions, variableE);
-        ResultLR0 resultLR0 = lr0(cfGrammar, new TerminalString("(n+n)+n"));
+        TerminalString terminalString = new TerminalString("(n+n)+n");
+        terminalString.getTerminals().add(Terminal.endString);
+        ResultLR0 resultLR0 = lr0(cfGrammar, terminalString);
     }
 
     public ResultLR0 lr0(CFGrammar grammar, TerminalString terminalString) {
@@ -48,7 +50,7 @@ public class LR0 {
         DFA dfa = buildAutomaton(replenishGrammar);
         Map<Variable, Set<Terminal>> follows = GrammarFollow.constructFollow(replenishGrammar);
         Map<State, Map<SymbolGrammar, ParsingTableEntry>> stateMapMap = buildParsingTable(dfa, follows);
-        ParsingTree parse = parse(stateMapMap);
+        ParsingTree parse = parse(dfa.getInitialState(),stateMapMap, terminalString);
         return new ResultLR0(parse);
     }
 
@@ -237,9 +239,45 @@ public class LR0 {
         return null;
     }
 
-    public ParsingTree parse(Map<State, Map<SymbolGrammar, ParsingTableEntry>> stateMapMap) {
+    public ParsingTree parse(State initialState, Map<State, Map<SymbolGrammar, ParsingTableEntry>> stateMapMap, TerminalString terminalString) {
+        Stack<ClassS> stack = new Stack<>();
+        stack.add(new ClassS(initialState));
+        for (Terminal terminal : terminalString.getTerminals()) {
+            ClassS classS = stack.peek();
+            State curState = classS.getState();
+            SymbolGrammar curToken = new SymbolGrammar(terminal);
+            ParsingTableEntry parsingTableEntry = stateMapMap.get(curState).get(curToken);
+            switch (parsingTableEntry.getType()) {
+                case SHIFT -> {
+                    State state = parsingTableEntry.getState();
+                    ClassS newClass = new ClassS(curToken, state);
+                    stack.add(newClass);
+                }
+                case REDUCE -> {
+                    GrammarString grammarString = parsingTableEntry.getGrammarString();
+                    List<ParsingTree> parsingTrees = new ArrayList<>();
+                    for (int i = 0; i < grammarString.size(); i++) {
+                        ClassS pop = stack.pop();
+                        parsingTrees.add(pop.getSymbolGrammar().getValue());
+                    }
+                    ParsingTree parsingTree = new ParsingTree(
+                            parsingTableEntry.getVariable(), parsingTrees);
+                }
+            }
+        }
         return null;
 
+    }
+
+    @Getter
+    @AllArgsConstructor
+    class ClassS {
+        private SymbolGrammar symbolGrammar;
+        private State state;
+
+        public ClassS(State state) {
+            this.state = state;
+        }
     }
 
     @Getter

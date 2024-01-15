@@ -14,23 +14,23 @@ import ru.bmstu.iu9.tfl_lab_2.utils.SSNF;
 public class OptimizationService {
     public String optimization(String regex) {
         Tree tree = Parser.parser(regex);
-        log.info(Tree.drawTree(tree));
-        log.info(tree.toString());
+        log.debug(Tree.drawTree(tree));
+        log.debug(tree.toString());
         Tree ssnfTree = SSNF.ssnf(SerializationUtils.clone(tree));
-        log.info(Tree.drawTree(ssnfTree));
-        log.info(ssnfTree.toString());
+        log.debug(Tree.drawTree(ssnfTree));
+        log.debug(ssnfTree.toString());
         Tree associativityTree = ACI.normalizeAssociativity(SerializationUtils.clone(ssnfTree));
-        log.info(Tree.drawTree(associativityTree));
-        log.info(associativityTree.toString());
+        log.debug(Tree.drawTree(associativityTree));
+        log.debug(associativityTree.toString());
         Tree commutativityTree = ACI.normalizeCommutativity(SerializationUtils.clone(associativityTree));
-        log.info(Tree.drawTree(commutativityTree));
-        log.info(commutativityTree.toString());
+        log.debug(Tree.drawTree(commutativityTree));
+        log.debug(commutativityTree.toString());
         Tree idempotencyTree = ACI.normalizeIdempotency(SerializationUtils.clone(commutativityTree));
-        log.info(Tree.drawTree(idempotencyTree));
-        log.info(idempotencyTree.toString());
+        log.debug(Tree.drawTree(idempotencyTree));
+        log.debug(idempotencyTree.toString());
         Tree dstrTree = DSTR.dstrTree(SerializationUtils.clone(idempotencyTree));
-        log.info(Tree.drawTree(dstrTree));
-        log.info(dstrTree.toString());
+        log.debug(Tree.drawTree(dstrTree));
+        log.debug(dstrTree.toString());
         return dstrTree.toString();
     }
 }

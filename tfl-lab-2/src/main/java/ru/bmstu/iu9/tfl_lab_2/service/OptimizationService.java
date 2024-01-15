@@ -25,12 +25,12 @@ public class OptimizationService {
         Tree commutativityTree = ACI.normalizeCommutativity(SerializationUtils.clone(associativityTree));
         log.debug(Tree.drawTree(commutativityTree));
         log.debug(commutativityTree.toString());
-        Tree idempotencyTree = ACI.normalizeIdempotency(SerializationUtils.clone(commutativityTree));
-        log.debug(Tree.drawTree(idempotencyTree));
-        log.debug(idempotencyTree.toString());
-        Tree dstrTree = DSTR.dstrTree(SerializationUtils.clone(idempotencyTree));
+        Tree dstrTree = DSTR.dstrTree(SerializationUtils.clone(commutativityTree));
         log.debug(Tree.drawTree(dstrTree));
         log.debug(dstrTree.toString());
-        return dstrTree.toString();
+        Tree idempotency = ACI.normalizeIdempotency(SerializationUtils.clone(dstrTree));
+        log.debug(Tree.drawTree(idempotency));
+        log.debug(idempotency.toString());
+        return idempotency.toString();
     }
 }

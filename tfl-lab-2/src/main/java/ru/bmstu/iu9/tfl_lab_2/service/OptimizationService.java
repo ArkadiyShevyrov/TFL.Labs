@@ -14,6 +14,7 @@ import ru.bmstu.iu9.tfl_lab_2.utils.SSNF;
 public class OptimizationService {
     public String optimization(String regex) {
         Tree tree = Parser.parser(regex);
+
         log.debug(Tree.drawTree(tree));
         log.debug(tree.toString());
         Tree ssnfTree = SSNF.ssnf(SerializationUtils.clone(tree));

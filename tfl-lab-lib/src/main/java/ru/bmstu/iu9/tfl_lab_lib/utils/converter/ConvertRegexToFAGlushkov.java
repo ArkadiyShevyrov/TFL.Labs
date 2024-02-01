@@ -47,6 +47,7 @@ public class ConvertRegexToFAGlushkov {
                         new Regex("d")));
         NFA convert = convert(regex);
 
+
         System.out.println();
     }
 
@@ -194,6 +195,7 @@ public class ConvertRegexToFAGlushkov {
 
                 firsts.add(emptyRegex);
                 lasts.add(emptyRegex);
+
 
                 return new Combo(firsts, lasts, follows);
             }

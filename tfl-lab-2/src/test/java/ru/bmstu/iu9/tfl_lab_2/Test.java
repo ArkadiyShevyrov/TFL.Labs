@@ -45,6 +45,7 @@ public class Test {
             words.add(s);
         }
 
+
         boolean flag = true;
         for (String word : words) {
 //            log.info(word);

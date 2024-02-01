@@ -11,7 +11,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class State implements Serializable {
+public class State implements Serializable, Comparable<State> {
     private StateValue value;
 
     public State(String value) {
@@ -25,5 +25,10 @@ public class State implements Serializable {
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    @Override
+    public int compareTo(State other) {
+        return Integer.compare(this.hashCode(), other.hashCode());
     }
 }

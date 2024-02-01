@@ -4,10 +4,7 @@ import lombok.experimental.UtilityClass;
 import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.DFA;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.NFA;
-import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertDFAToRegex;
-import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertDFAToRegex2;
-import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertNFAToDFA;
-import ru.bmstu.iu9.tfl_lab_lib.utils.converter.ConvertRegexToNFA;
+import ru.bmstu.iu9.tfl_lab_lib.utils.converter.*;
 
 @UtilityClass
 public class Converter {
@@ -25,5 +22,13 @@ public class Converter {
 
     public DFA convertNFAToDFA(NFA nfa) {
         return ConvertNFAToDFA.convert(nfa);
+    }
+
+    public NFA convertStringAutomateToNFA(String automate) {
+        return ConvertStringAutomateToNFA.convert(automate);
+    }
+
+    public Regex convertNFAToRegex(NFA nfa) {
+        return ConvertNFAToRegex.convert(nfa);
     }
 }

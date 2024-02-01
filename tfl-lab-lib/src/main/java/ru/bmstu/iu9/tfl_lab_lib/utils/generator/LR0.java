@@ -258,7 +258,7 @@ public class LR0 {
                     List<ParsingTree> parsingTrees = new ArrayList<>();
                     for (int i = 0; i < grammarString.size(); i++) {
                         ClassS pop = stack.pop();
-                        parsingTrees.add(pop.getSymbolGrammar().getValue());
+                        parsingTrees.add((ParsingTree) pop.getSymbolGrammar().getValue());
                     }
                     ParsingTree parsingTree = new ParsingTree(
                             parsingTableEntry.getVariable(), parsingTrees);

@@ -2,6 +2,7 @@ package ru.bmstu.iu9.tfl_lab_lib.model.automaton;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -10,6 +11,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode
+@NoArgsConstructor
 public class StateValue implements Serializable {
     private Type type;
 
@@ -25,7 +27,7 @@ public class StateValue implements Serializable {
     }
 
     public StateValue(Type type, String string) {
-        if (type == Type.STRING) {
+        if (type == Type.VALUE) {
             this.type = type;
             this.string = string;
         }
@@ -33,13 +35,13 @@ public class StateValue implements Serializable {
 
     public enum Type {
         SET_STATE,
-        STRING
+        VALUE
     }
 
     @Override
     public String toString() {
         switch (type) {
-            case STRING -> {
+            case VALUE -> {
                 return string;
             }
             case SET_STATE -> {

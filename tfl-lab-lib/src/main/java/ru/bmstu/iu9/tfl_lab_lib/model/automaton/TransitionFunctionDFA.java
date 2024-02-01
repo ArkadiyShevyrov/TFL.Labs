@@ -3,9 +3,7 @@ package ru.bmstu.iu9.tfl_lab_lib.model.automaton;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Getter
 @AllArgsConstructor
@@ -19,7 +17,9 @@ public class TransitionFunctionDFA implements TransitionFunction, Serializable {
 
     @Override
     public State transition(State state, Symbol symbol) {
-        return tableTransition.get(state).get(symbol);
+        return Optional.ofNullable(tableTransition.get(state))
+                .map(symbolSetMap -> symbolSetMap.get(symbol))
+                .orElse(null);
     }
 
     public State advancedTransition(State state, StringSymbols symbols) {

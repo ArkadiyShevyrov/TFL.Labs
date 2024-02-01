@@ -8,6 +8,7 @@
         <module>tfl-lab-1</module>
         <module>tfl-lab-2</module>
         <module>tfl-lab-lib</module>
+        <module>tfl-lab-2-null</module>
     </modules>
 
     <parent>

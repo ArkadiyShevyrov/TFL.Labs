@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Symbol implements Serializable {
+public class Symbol implements Serializable, Comparable<Symbol> {
     public static Symbol epsilon = new Symbol(Type.EPSILON);
     private String string;
     private Type type;
@@ -45,6 +45,12 @@ public class Symbol implements Serializable {
                 return null;
             }
         }
+    }
+
+    @Override
+    public int compareTo(Symbol other) {
+        return Integer.compare(this.hashCode(), other.hashCode());
+
     }
 
     public enum Type {

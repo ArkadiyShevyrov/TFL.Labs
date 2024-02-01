@@ -11,6 +11,9 @@ public class RegexLin extends Regex {
         super(regex.getType(), regex.getValue(), regex.getLeft(), regex.getRight());
         this.linNumber = linNumber;
     }
+    public RegexLin(Type type) {
+        super(type);
+    }
 
     public RegexLin(Type type, RegexLin left) {
         super(type, left);

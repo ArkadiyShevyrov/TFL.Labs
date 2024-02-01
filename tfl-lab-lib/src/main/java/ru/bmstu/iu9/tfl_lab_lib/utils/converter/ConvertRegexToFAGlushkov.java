@@ -13,32 +13,41 @@ import java.util.*;
 
 @UtilityClass
 public class ConvertRegexToFAGlushkov {
+    static final RegexLin emptyRegex = new RegexLin(Regex.Type.EMPTY);
     public static void main(String[] args) {
+//        Regex regex = new Regex(
+//                Regex.Type.CONCAT,
+//                new Regex(
+//                        Regex.Type.OR,
+//                        new Regex(
+//                                Regex.Type.CONCAT,
+//                                new Regex("b"),
+//                                new Regex("a")),
+//                        new Regex("b")),
+//                new Regex(
+//                        Regex.Type.CONCAT,
+//                        new Regex("a"),
+//                        new Regex(
+//                                Regex.Type.CONCAT,
+//                                new Regex("a"),
+//                                new Regex(
+//                                        Regex.Type.ASTERISK,
+//                                        new Regex(
+//                                                Regex.Type.OR,
+//                                                new Regex("a"),
+//                                                new Regex(
+//                                                        Regex.Type.CONCAT,
+//                                                        new Regex("a"),
+//                                                        new Regex("b")))))));
         Regex regex = new Regex(
-                Regex.Type.CONCAT,
-                new Regex(
-                        Regex.Type.OR,
-                        new Regex(
-                                Regex.Type.CONCAT,
-                                new Regex("b"),
-                                new Regex("a")),
-                        new Regex("b")),
+                Regex.Type.ASTERISK,
                 new Regex(
                         Regex.Type.CONCAT,
-                        new Regex("a"),
-                        new Regex(
-                                Regex.Type.CONCAT,
-                                new Regex("a"),
-                                new Regex(
-                                        Regex.Type.ASTERISK,
-                                        new Regex(
-                                                Regex.Type.OR,
-                                                new Regex("a"),
-                                                new Regex(
-                                                        Regex.Type.CONCAT,
-                                                        new Regex("a"),
-                                                        new Regex("b")))))));
+                        new Regex("c"),
+                        new Regex("d")));
         NFA convert = convert(regex);
+
+
         System.out.println();
     }
 
@@ -61,11 +70,18 @@ public class ConvertRegexToFAGlushkov {
 
         Set<State> finalStates = new HashSet<>();
         for (RegexLin regexLin : combo.getLasts()) {
+            if (regexLin.equals(emptyRegex)) {
+                continue;
+            }
             finalStates.add(new State(regexLin.toString()));
         }
 
         TransitionFunctionNFA transitionFunctionNFA = new TransitionFunctionNFA();
         for (RegexLin regexLin : combo.getFirsts()) {
+            if (regexLin.equals(emptyRegex)) {
+                finalStates.add(initialState);
+                continue;
+            }
             State stateNext = new State(regexLin.toString());
             Symbol symbol = new Symbol(regexLin.getValue());
             transitionFunctionNFA.putToTable(initialState, symbol, stateNext);
@@ -73,16 +89,25 @@ public class ConvertRegexToFAGlushkov {
         for (RegexLin regexLin : combo.getFollows().keySet()) {
             State stateStart = new State(regexLin.toString());
             for (RegexLin refLin : combo.getFollows().get(regexLin)) {
+                if (refLin.equals(emptyRegex)) {
+                    continue;
+                }
                 State stateNext = new State(refLin.toString());
                 Symbol symbol = new Symbol(refLin.getValue());
                 transitionFunctionNFA.putToTable(stateStart, symbol, stateNext);
             }
         }
         for (RegexLin regexLin : combo.getFirsts()) {
+            if (regexLin.equals(emptyRegex)) {
+                continue;
+            }
             State state = new State(regexLin.toString());
             transitionFunctionNFA.putToTable(state);
         }
         for (RegexLin regexLin : combo.getLasts()) {
+            if (regexLin.equals(emptyRegex)) {
+                continue;
+            }
             State state = new State(regexLin.toString());
             transitionFunctionNFA.putToTable(state);
         }
@@ -96,20 +121,20 @@ public class ConvertRegexToFAGlushkov {
         switch (regex.getType()) {
             case SYMBOL -> {
                 return new Combo(
-                        new ArrayList<>(List.of(regex)),
-                        new ArrayList<>(List.of(regex)),
+                        new HashSet<>(Set.of(regex)),
+                        new HashSet<>(Set.of(regex)),
                         new HashMap<>());
             }
             case OR -> {
                 Combo comboLeft = geCombo((RegexLin) regex.getLeft());
                 Combo comboRight = geCombo((RegexLin) regex.getRight());
 
-                List<RegexLin> firsts = new ArrayList<>();
-                List<RegexLin> lasts = new ArrayList<>();
-                Map<RegexLin, List<RegexLin>> follows = new HashMap<>();
+                Set<RegexLin> firsts = new HashSet<>();
+                Set<RegexLin> lasts = new HashSet<>();
+                Map<RegexLin, Set<RegexLin>> follows = new HashMap<>();
 
-                firsts.addAll(comboLeft.getFirsts());
-                firsts.addAll(comboRight.getFirsts());
+                firsts.addAll(Objects.requireNonNull(comboLeft).getFirsts());
+                firsts.addAll(Objects.requireNonNull(comboRight).getFirsts());
 
                 lasts.addAll(comboLeft.getLasts());
                 lasts.addAll(comboRight.getLasts());
@@ -123,37 +148,54 @@ public class ConvertRegexToFAGlushkov {
                 Combo comboLeft = geCombo((RegexLin) regex.getLeft());
                 Combo comboRight = geCombo((RegexLin) regex.getRight());
 
-                Map<RegexLin, List<RegexLin>> follows = new HashMap<>();
+                Map<RegexLin, Set<RegexLin>> follows = new HashMap<>();
 
-                follows.putAll(comboLeft.getFollows());
-                follows.putAll(comboRight.getFollows());
+                follows.putAll(Objects.requireNonNull(comboLeft).getFollows());
+                follows.putAll(Objects.requireNonNull(comboRight).getFollows());
 
                 for (RegexLin last : comboLeft.getLasts()) {
-                    follows.put(last, comboRight.getFirsts());
+                    if (last.equals(emptyRegex)) {
+                        continue;
+                    }
+                    Set<RegexLin> firsts = new HashSet<>(comboRight.getFirsts());
+                    firsts.remove(emptyRegex);
+                    follows.put(last, firsts);
                 }
 
-                List<RegexLin> lasts = comboRight.getLasts();
-                List<RegexLin> firsts = comboLeft.getFirsts();
-                if (regex.getRight().getType() == Regex.Type.ASTERISK) {
-                    lasts.addAll(firsts);
-                }
-                if (regex.getLeft().getType() == Regex.Type.ASTERISK) {
-                    firsts.addAll(lasts);
-                }
 
-                return new Combo(firsts, lasts, follows);
+                Set<RegexLin> firstsRight = comboRight.getFirsts();
+                Set<RegexLin> firstsLeft = comboLeft.getFirsts();
+                Set<RegexLin> lastsRight = comboRight.getLasts();
+                Set<RegexLin> lastsLeft = comboLeft.getLasts();
+                if (lastsRight.contains(emptyRegex)) {
+                    lastsRight.addAll(lastsLeft);
+                    if (!lastsLeft.contains(emptyRegex)) {
+                        lastsRight.remove(emptyRegex);
+                    }
+                }
+                if (firstsLeft.contains(emptyRegex)) {
+                    firstsLeft.addAll(firstsRight);
+                    if (!firstsRight.contains(emptyRegex)) {
+                        firstsLeft.remove(emptyRegex);
+                    }
+                }
+                return new Combo(firstsLeft, lastsRight, follows);
             }
             case ASTERISK -> {
                 Combo combo = geCombo((RegexLin) regex.getLeft());
 
-                List<RegexLin> firsts = combo.getFirsts();
-                List<RegexLin> lasts = combo.getLasts();
+                Set<RegexLin> firsts = Objects.requireNonNull(combo).getFirsts();
+                Set<RegexLin> lasts = Objects.requireNonNull(combo).getLasts();
 
-                Map<RegexLin, List<RegexLin>> follows = new HashMap<>(combo.getFollows());
+                Map<RegexLin, Set<RegexLin>> follows = new HashMap<>(combo.getFollows());
 
                 for (RegexLin last : lasts) {
                     follows.put(last, firsts);
                 }
+
+                firsts.add(emptyRegex);
+                lasts.add(emptyRegex);
+
 
                 return new Combo(firsts, lasts, follows);
             }
@@ -166,17 +208,17 @@ public class ConvertRegexToFAGlushkov {
     @Getter
     @AllArgsConstructor
     public static class Combo {
-        List<RegexLin> firsts;
-        List<RegexLin> lasts;
-        Map<RegexLin, List<RegexLin>> follows;
+        Set<RegexLin> firsts;
+        Set<RegexLin> lasts;
+        Map<RegexLin, Set<RegexLin>> follows;
 
         @Override
         public String toString() {
             StringBuilder stringBuilder = new StringBuilder();
             for (RegexLin follow : follows.keySet()) {
-                List<RegexLin> list = follows.get(follow);
+                Set<RegexLin> Set = follows.get(follow);
                 stringBuilder.append(follow);
-                stringBuilder.append(list);
+                stringBuilder.append(Set);
                 stringBuilder.append("\n");
             }
             return stringBuilder.toString();

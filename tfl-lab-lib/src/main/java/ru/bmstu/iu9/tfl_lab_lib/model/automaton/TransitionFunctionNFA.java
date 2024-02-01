@@ -2,7 +2,10 @@ package ru.bmstu.iu9.tfl_lab_lib.model.automaton;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @AllArgsConstructor
@@ -70,7 +73,7 @@ public class TransitionFunctionNFA implements TransitionFunction {
                     continue;
                 }
                 visited.add(eState);
-                states.addAll(epsilonClosureWithVisited(visited,eState));
+                states.addAll(epsilonClosureWithVisited(visited, eState));
             }
         }
         return states;
@@ -87,6 +90,7 @@ public class TransitionFunctionNFA implements TransitionFunction {
         }
         tableTransition.put(stateStart, newMap);
     }
+
     public void putToTable(State stateStart) {
         Map<Symbol, Set<State>> oldMap = tableTransition.get(stateStart);
         Map<Symbol, Set<State>> newMap = Objects.requireNonNullElseGet(oldMap, HashMap::new);
@@ -104,21 +108,17 @@ public class TransitionFunctionNFA implements TransitionFunction {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<State, Map<Symbol, Set<State>>> outerEntry : tableTransition.entrySet()) {
-            State currentState = outerEntry.getKey();
-            Map<Symbol, Set<State>> transitionMap = outerEntry.getValue();
-            for (Map.Entry<Symbol, Set<State>> innerEntry : transitionMap.entrySet()) {
-                Symbol transitionSymbol = innerEntry.getKey();
-                Set<State> destinationStates = innerEntry.getValue();
-                stringBuilder.append("{").append(currentState).append("}")
-                        .append(" -> ")
-                        .append(transitionSymbol)
-                        .append(" -> ")
-                        .append(destinationStates)
-                        .append("\n");
-            }
-        }
-        return "\n" + stringBuilder.toString().trim();
+        return tableTransition.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .flatMap(outerEntry ->
+                        outerEntry.getValue().entrySet().stream()
+                                .sorted(Map.Entry.comparingByKey())
+                                .flatMap(innerEntry -> {
+                                    State currentState = outerEntry.getKey();
+                                    Symbol transitionSymbol = innerEntry.getKey();
+                                    List<State> destinationStates = innerEntry.getValue().stream().sorted().toList();
+                                    return Stream.of(String.format("(%s, %s) -> %s", currentState, transitionSymbol, destinationStates));
+                                }))
+                .collect(Collectors.joining("\n", "\n", ""));
     }
 }

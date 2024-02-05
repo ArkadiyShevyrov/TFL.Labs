@@ -1,4 +1,4 @@
-package ru.bmstu.iu9;
+package ru.bmstu.iu9.tfl_lab_1_null;
 
 
 import java.io.BufferedReader;

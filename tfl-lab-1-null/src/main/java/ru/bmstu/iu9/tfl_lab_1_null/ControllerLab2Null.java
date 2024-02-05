@@ -259,7 +259,9 @@ public class ControllerLab2Null {
         SMT2 smt2 = new SMT2(declareConstants, asserts);
 
         log.info("\n" +smt2);
-        return ResponseEntity.ok().body(smtGen(smt2.toString()));
+        String body = smtGen(smt2.toString());
+        log.info(body);
+        return ResponseEntity.ok().body(body);
     }
 
     public String smtGen(String string) {

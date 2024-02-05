@@ -17,11 +17,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+        <!-- Z3 -->
         <dependency>
-            <groupId>ru.bmstu.iu9</groupId>
-            <artifactId>tfl-lab-1</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>tools.aqua</groupId>
+            <artifactId>z3-turnkey</artifactId>
+            <version>4.12.2</version>
         </dependency>
     </dependencies>
 

@@ -1,9 +1,10 @@
 package ru.bmstu.iu9.tfl_lab_1_null;
 
+import com.microsoft.z3.Context;
+import com.microsoft.z3.Solver;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.bmstu.iu9.tfl_lab_1.service.SMTService;
 import ru.bmstu.iu9.tfl_lab_1_null.model.rest.Domino;
 import ru.bmstu.iu9.tfl_lab_1_null.model.smt.SMT2;
 import ru.bmstu.iu9.tfl_lab_1_null.model.smt.interfaces.Term;
@@ -27,8 +27,14 @@ import java.util.*;
 @RequestMapping("/rest/lab-1-null")
 @RequiredArgsConstructor
 public class ControllerLab2Null {
-    @NonNull
-    private final SMTService smtService;
+
+
+    public static void main(String[] args) {
+        ControllerLab2Null controllerLab2Null = new ControllerLab2Null();
+        controllerLab2Null.convert("""
+                (a,a)
+                """);
+    }
 
     @Operation(description = "Решение проблем соответствия Поста")
     @PostMapping(value = "/solutionsProblemsPostCompliance")
@@ -57,6 +63,7 @@ public class ControllerLab2Null {
                             term,
                             new ValueTerm("0"))));
         }
+/*
 
         // Количество вхождений пар доминошек
         List<Term> Mdd = new ArrayList<>();
@@ -246,13 +253,22 @@ public class ControllerLab2Null {
                 ));
             }
         }
+*/
 
 
         SMT2 smt2 = new SMT2(declareConstants, asserts);
 
-        String s = smtService.smtGen(smt2.toString());
+        log.info("\n" +smt2);
+        return ResponseEntity.ok().body(smtGen(smt2.toString()));
+    }
 
-        return ResponseEntity.ok().body(smt2.toString());
+    public String smtGen(String string) {
+        try (Context context = new Context()) {
+            Solver solver = context.mkSimpleSolver();
+            solver.fromString(string);
+            return solver.check().toString();
+        }
+
     }
 
     static int cnt(String s, String p) {

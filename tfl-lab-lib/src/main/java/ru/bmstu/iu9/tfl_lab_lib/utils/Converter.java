@@ -1,11 +1,14 @@
 package ru.bmstu.iu9.tfl_lab_lib.utils;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SerializationUtils;
 import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.DFA;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.NFA;
 import ru.bmstu.iu9.tfl_lab_lib.utils.converter.*;
 
+@Slf4j
 @UtilityClass
 public class Converter {
     public Regex convertDFAToRegex(DFA dfa) {
@@ -29,6 +32,14 @@ public class Converter {
     }
 
     public Regex convertNFAToRegex(NFA nfa) {
-        return ConvertNFAToRegex.convert2(nfa);
+        Regex regex1 = ConvertNFAToRegex.convert1(SerializationUtils.clone(nfa));
+        Regex regex2 = ConvertNFAToRegex.convert2(SerializationUtils.clone(nfa));
+        if (regex1.toString().equals(regex2.toString())) {
+            log.info("\nTrue");
+        } else {
+            log.info("\n"+"First "+regex1.toString());
+            log.info("\n"+"Last "+regex2.toString());
+        }
+        return new Regex("");
     }
 }

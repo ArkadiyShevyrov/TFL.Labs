@@ -55,7 +55,7 @@ public class ConvertNFAToRegex {
 
         String string = regexes.get(0).toString();
         log.info("\n"+string);
-        return new Regex(string);
+        return regexes.get(0);
     }
 
     private int countW(Regex regexes) {
@@ -122,7 +122,7 @@ public class ConvertNFAToRegex {
     private NFA addInitialState(NFA nfa) {
         Set<State> states = nfa.getStates();
         Set<Symbol> symbols = nfa.getSymbols();
-        State initialState = new State(nfa.getInitialState() + "0");
+        State initialState = new State(nfa.getInitialState() + "0Start");
         states.add(initialState);
         Set<State> finalStates = nfa.getFinalStates();
         TransitionFunctionNFA transitionFunction = nfa.getTransitionFunction();

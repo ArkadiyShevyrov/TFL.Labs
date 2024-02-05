@@ -19,7 +19,6 @@ public class SMT2 {
     private final String footer = """
             (check-sat)
             (get-model)
-            (exit)
             """;
 
     public SMT2(List<DeclareConst> declareConstants, List<Assert> asserts) {

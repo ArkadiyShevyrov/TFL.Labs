@@ -2,14 +2,14 @@ package ru.bmstu.iu9.tfl_lab_lib.model.automaton;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
 
 @Getter
 @AllArgsConstructor
-public class NFA implements FA {
+public class NFA implements FA, Serializable {
     private Set<State> states;
     private Set<Symbol> symbols;
     private State initialState;

@@ -2,6 +2,7 @@ package ru.bmstu.iu9.tfl_lab_lib.utils.converter;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SerializationUtils;
 import ru.bmstu.iu9.tfl_lab_lib.model.Regex;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.NFA;
 import ru.bmstu.iu9.tfl_lab_lib.model.automaton.State;
@@ -17,7 +18,7 @@ import java.util.*;
 public class ConvertNFAToRegex {
     private final Regex empty = new Regex(Regex.Type.EMPTY);
 
-    public Regex convert(NFA nfa) {
+    public Regex convert1(NFA nfa) {
 
         NFA nfa1 = addInitialState(nfa);
         NFA nfa2 = addFinalState(nfa1);
@@ -26,13 +27,94 @@ public class ConvertNFAToRegex {
         removingStates.remove(nfa2.getInitialState());
         removingStates.remove(nfa2.getFinalStates().stream().toList().get(0));
 
-        NFA currentNFA = nfa2;
-        for (State removingState : removingStates) {
-            currentNFA = removeState(currentNFA, removingState);
-        }
+        NFA currentNFA = getNfaZero(nfa2, removingStates);
 
         log.info(nfa2.toString());
         return getTransitionRegex(currentNFA.getTransitionFunction().getTableTransition(), currentNFA.getInitialState(), currentNFA.getFinalStates().stream().toList().get(0));
+    }
+
+    public Regex convert2(NFA nfa) {
+
+        NFA nfa1 = addInitialState(nfa);
+        NFA nfa2 = addFinalState(nfa1);
+
+        Set<State> removingStates = nfa2.getStates();
+        removingStates.remove(nfa2.getInitialState());
+        removingStates.remove(nfa2.getFinalStates().stream().toList().get(0));
+
+        List<NFA> currentNFA = getNfaALL(nfa2, removingStates);
+
+        List<Regex> regexes = new ArrayList<>();
+        for (NFA nfa3 : currentNFA) {
+            regexes.add(getTransitionRegex(nfa3.getTransitionFunction().getTableTransition(), nfa3.getInitialState(), nfa3.getFinalStates().stream().toList().get(0)));
+        }
+
+        regexes.sort(Comparator.comparingInt(ConvertNFAToRegex::countW));
+
+        log.info(Arrays.deepToString(regexes.toArray()));
+
+        return new Regex(regexes.get(0).toString());
+    }
+
+    private int countW(Regex regexes) {
+        String onlyLetters = regexes.toString().replaceAll("[^a-zA-Z0-9]", "");
+        return onlyLetters.length();
+    }
+
+    private List<NFA> getNfaALL(NFA nfa2, Set<State> removingStates) {
+        List<List<State>> allList = new ArrayList<>();
+        for (State state : removingStates) {
+            for (State state1 : removingStates) {
+                if (state.equals(state1)) {
+                    continue;
+                }
+                List<State> list = new ArrayList<>();
+                list.add(state);
+                list.add(state1);
+                for (State state2 : removingStates) {
+                    if (state.equals(state2) || state1.equals(state2)) {
+                        continue;
+                    }
+                    list.add(state2);
+                }
+                allList.add(list);
+            }
+        }
+
+        List<NFA> nfaAll = new ArrayList<>();
+        for (List<State> list : allList) {
+            NFA currentNFA = SerializationUtils.clone(nfa2);
+            for (State removingState : list) {
+                currentNFA = removeState(currentNFA, removingState);
+            }
+            nfaAll.add(currentNFA);
+        }
+
+        return nfaAll;
+    }
+
+    private static NFA getNfaZero(NFA nfa2, Set<State> removingStates) {
+        NFA currentNFA = nfa2;
+        List<State> list = new ArrayList<>(removingStates.stream().toList());
+        NFA finalCurrentNFA = currentNFA;
+        Collections.sort(list, Comparator.comparingInt(s -> countOut(s, finalCurrentNFA)));
+        log.info("\nList Removing  "+Arrays.deepToString(list.toArray()));
+        for (State removingState : list) {
+            currentNFA = removeState(currentNFA, removingState);
+        }
+        return currentNFA;
+    }
+
+    private int countOut(State state, NFA currentNFA) {
+        TransitionFunctionNFA transitionFunction = currentNFA.getTransitionFunction();
+        Map<State, Map<Symbol, Set<State>>> tableTransition = transitionFunction.getTableTransition();
+        Map<Symbol, Set<State>> symbolSetMap = tableTransition.get(state);
+        Set<State> statesNext = new HashSet<>();
+        for (Symbol symbol : symbolSetMap.keySet()) {
+            Set<State> states = symbolSetMap.get(symbol);
+            statesNext.addAll(states);
+        }
+        return statesNext.size();
     }
 
     private NFA addInitialState(NFA nfa) {
@@ -71,9 +153,9 @@ public class ConvertNFAToRegex {
 
         for (State prev : prevStates) {
             for (State next : nextStates) {
-                if (prev.equals(next)) {
-                    continue;
-                }
+//                if (prev.equals(next)) {
+//                    continue;
+//                }
                 Regex prevNext = getTransitionRegex(transitionFunction.getTableTransition(), prev, next);
                 removeTransitions(tableTransition, prev, next);
                 Regex prevState = getTransitionRegex(transitionFunction.getTableTransition(), prev, state);

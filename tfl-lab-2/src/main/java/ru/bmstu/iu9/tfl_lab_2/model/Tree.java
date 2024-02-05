@@ -66,7 +66,7 @@ public class Tree implements Serializable {
                 }
                 if (left.getType() == Type.OR &&
                         right.getType() == Type.OR) {
-                    return "(" + left.getType() + ")" + "(" + right + ")";
+                    return "(" + left + ")" + "(" + right + ")";
                 }
                 return left + "" + right;
             }

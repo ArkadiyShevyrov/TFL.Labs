@@ -29,6 +29,6 @@ public class Converter {
     }
 
     public Regex convertNFAToRegex(NFA nfa) {
-        return ConvertNFAToRegex.convert(nfa);
+        return ConvertNFAToRegex.convert2(nfa);
     }
 }

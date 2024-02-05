@@ -51,9 +51,11 @@ public class ConvertNFAToRegex {
 
         regexes.sort(Comparator.comparingInt(ConvertNFAToRegex::countW));
 
-        log.info(Arrays.deepToString(regexes.toArray()));
+        log.info("\n" +Arrays.deepToString(regexes.toArray()));
 
-        return new Regex(regexes.get(0).toString());
+        String string = regexes.get(0).toString();
+        log.info("\n"+string);
+        return new Regex(string);
     }
 
     private int countW(Regex regexes) {

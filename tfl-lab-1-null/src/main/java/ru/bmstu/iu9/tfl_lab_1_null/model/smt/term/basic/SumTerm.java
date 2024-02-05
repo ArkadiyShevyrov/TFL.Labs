@@ -21,6 +21,6 @@ public class SumTerm implements Term {
         return String.format("(%s %s)", name,
                 this.terms.stream()
                         .map(Object::toString)
-                        .reduce((s1, s2) -> s1 + " " + s2));
+                        .reduce((s1, s2) -> s1 + " " + s2).orElse(""));
     }
 }

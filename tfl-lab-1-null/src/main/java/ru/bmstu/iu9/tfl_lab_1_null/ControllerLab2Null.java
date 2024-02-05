@@ -63,7 +63,7 @@ public class ControllerLab2Null {
                             term,
                             new ValueTerm("0"))));
         }
-/*
+
 
         // Количество вхождений пар доминошек
         List<Term> Mdd = new ArrayList<>();
@@ -96,7 +96,7 @@ public class ControllerLab2Null {
                 new EqualTerm(
                         new SumTerm(isLastD),
                         new ValueTerm("1"))));
-
+/*
         // Связываем количество доминошек и пар доминошек
         for (int i = 0; i < dominoes.size(); i++) {
             List<Term> sumDD = new ArrayList<>();

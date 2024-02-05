@@ -34,8 +34,9 @@ public class ControllerLab2Null {
     public static void main(String[] args) {
         ControllerLab2Null controllerLab2Null = new ControllerLab2Null();
         controllerLab2Null.convert("""
-                (a,a)
-                (b,b)
+                (a,ab)
+                (bab,a)
+                (a,ba)
                 """);
     }
 
@@ -369,6 +370,18 @@ public class ControllerLab2Null {
                                 new SumTerm(sumDown)
                         )
                 ));
+            }
+        }
+
+        for (int i = 0; i < dominoes.size(); i++) {
+            for (int j = 0; j < dominoes.size(); j++) {
+                Term mdd = new ValueTerm("Md" + i + "d" + j);
+                Term mmdd = new ValueTerm("MMd" + j + "d" + i);
+
+                asserts.add(new Assert(
+                        new EqualTerm(
+                                mdd,
+                                mmdd)));
             }
         }
 

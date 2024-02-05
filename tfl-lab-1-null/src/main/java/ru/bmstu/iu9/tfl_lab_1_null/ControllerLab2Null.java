@@ -3,6 +3,7 @@ package ru.bmstu.iu9.tfl_lab_1_null;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.bmstu.iu9.tfl_lab_1.service.SMTService;
 import ru.bmstu.iu9.tfl_lab_1_null.model.rest.Domino;
 import ru.bmstu.iu9.tfl_lab_1_null.model.smt.SMT2;
 import ru.bmstu.iu9.tfl_lab_1_null.model.smt.interfaces.Term;
@@ -25,15 +27,8 @@ import java.util.*;
 @RequestMapping("/rest/lab-1-null")
 @RequiredArgsConstructor
 public class ControllerLab2Null {
-
-    public static void main(String[] args) {
-        ControllerLab2Null controllerLab2Null = new ControllerLab2Null();
-        controllerLab2Null.convert("""
-                (a,a)
-                (b,b)
-                (c,c)
-                """);
-    }
+    @NonNull
+    private final SMTService smtService;
 
     @Operation(description = "Решение проблем соответствия Поста")
     @PostMapping(value = "/solutionsProblemsPostCompliance")
@@ -226,13 +221,36 @@ public class ControllerLab2Null {
         // Сравним количество пар букв
         for (Character letter1 : alphabet) {
             for (Character letter2 : alphabet) {
+                List<Term> sumUp = new ArrayList<>();
+                List<Term> sumDown = new ArrayList<>();
+                for (int i = 0; i < dominoes.size(); i++) {
+                    Term md = new ValueTerm("Md" + i);
+                    Term pu = new ValueTerm("Pu_" + letter1 + letter2 + "d" + i);
+                    Term pd = new ValueTerm("Pd_" + letter1 + letter2 + "d" + i);
+                    sumUp.add(new MultTerm(md, pu));
+                    sumDown.add(new MultTerm(md, pd));
+                    for (int j = 0; j < dominoes.size(); j++) {
+                        Term mdd = new ValueTerm("Md" + i + "d" + j);
+                        Term pud = new ValueTerm("Pu_" + letter1 + letter2 + "d" + i+ "d" + j);
+                        Term pdd = new ValueTerm("Pd_" + letter1 + letter2 + "d" + i+ "d" + j);
+                        sumUp.add(new MultTerm(mdd, pud));
+                        sumDown.add(new MultTerm(mdd, pdd));
+                    }
+                }
 
+                asserts.add(new Assert(
+                        new EqualTerm(
+                                new SumTerm(sumUp),
+                                new SumTerm(sumDown)
+                        )
+                ));
             }
         }
 
 
-
         SMT2 smt2 = new SMT2(declareConstants, asserts);
+
+        String s = smtService.smtGen(smt2.toString());
 
         return ResponseEntity.ok().body(smt2.toString());
     }

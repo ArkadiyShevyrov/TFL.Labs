@@ -23,22 +23,16 @@ import ru.bmstu.iu9.tfl_lab_1_null.model.smt.term.basic.*;
 
 import java.util.*;
 
+import static com.microsoft.z3.Status.SATISFIABLE;
+
 @Slf4j
 @Tag(name = "Lab1-null", description = "Lab 1-null description")
 @RestController
 @RequestMapping("/rest/lab-1-null")
 @RequiredArgsConstructor
-public class ControllerLab2Null {
+public class ControllerLab1Null {
 
 
-    public static void main(String[] args) {
-        ControllerLab2Null controllerLab2Null = new ControllerLab2Null();
-        controllerLab2Null.convert("""
-                (a,ab)
-                (bab,a)
-                (a,ba)
-                """);
-    }
 
     @Operation(description = "Решение проблем соответствия Поста")
     @PostMapping(value = "/solutionsProblemsPostCompliance")
@@ -400,7 +394,10 @@ public class ControllerLab2Null {
             Solver solver = context.mkSimpleSolver();
             solver.fromString(string);
             Status check = solver.check();
-            Model model = solver.getModel();
+            if (check.equals(SATISFIABLE)) {
+                Model model = solver.getModel();
+                log.info(model.toString());
+            }
             return solver.check().toString();
         }
     }

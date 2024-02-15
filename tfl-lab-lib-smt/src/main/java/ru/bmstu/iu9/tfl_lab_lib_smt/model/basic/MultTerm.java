@@ -1,8 +1,9 @@
-package ru.bmstu.iu9.tfl_lab_1_null.model.smt.term.basic;
+package ru.bmstu.iu9.tfl_lab_lib_smt.model.basic;
 
 import lombok.AllArgsConstructor;
 import lombok.Setter;
-import ru.bmstu.iu9.tfl_lab_1_null.model.smt.interfaces.Term;
+import ru.bmstu.iu9.tfl_lab_lib_smt.model.Term;
+
 
 @Setter
 @AllArgsConstructor

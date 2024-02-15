@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.bmstu.iu9.tfl_lab_1_null.model.rest.Domino;
-import ru.bmstu.iu9.tfl_lab_1_null.model.smt.SMT2;
-import ru.bmstu.iu9.tfl_lab_1_null.model.smt.interfaces.Term;
-import ru.bmstu.iu9.tfl_lab_1_null.model.smt.part.Assert;
-import ru.bmstu.iu9.tfl_lab_1_null.model.smt.part.DeclareConst;
-import ru.bmstu.iu9.tfl_lab_1_null.model.smt.term.basic.*;
+import ru.bmstu.iu9.tfl_lab_1_null.model.Domino;
+import ru.bmstu.iu9.tfl_lab_lib_smt.model.SMT2;
+import ru.bmstu.iu9.tfl_lab_lib_smt.model.Term;
+import ru.bmstu.iu9.tfl_lab_lib_smt.model.basic.*;
+import ru.bmstu.iu9.tfl_lab_lib_smt.model.part.*;
 
 import java.util.*;
 
 import static com.microsoft.z3.Status.SATISFIABLE;
+import static ru.bmstu.iu9.tfl_lab_lib_smt.model.part.DeclareConstant.Type.INT;
 
 @Slf4j
 @Tag(name = "Lab1-null", description = "Lab 1-null description")
@@ -31,7 +31,6 @@ import static com.microsoft.z3.Status.SATISFIABLE;
 @RequestMapping("/rest/lab-1-null")
 @RequiredArgsConstructor
 public class ControllerLab1Null {
-
 
 
     @Operation(description = "Решение проблем соответствия Поста")
@@ -46,7 +45,7 @@ public class ControllerLab1Null {
         Set<Character> alphabet = getAlphabet(dominoes);
         log.info(Arrays.deepToString(alphabet.toArray()));
 
-        List<DeclareConst> declareConstants = new ArrayList<>();
+        List<DeclareConstant> declareConstants = new ArrayList<>();
         List<Assert> asserts = new ArrayList<>();
 
         // Количество вхождений доминошек
@@ -55,7 +54,7 @@ public class ControllerLab1Null {
             Md.add(new ValueTerm("Md" + i));
         }
         for (Term term : Md) {
-            declareConstants.add(new DeclareConst(term));
+            declareConstants.add(new DeclareConstant(term, INT));
             asserts.add(new Assert(
                     new GreaterEqualTerm(
                             term,
@@ -71,7 +70,7 @@ public class ControllerLab1Null {
             }
         }
         for (Term term : Mdd) {
-            declareConstants.add(new DeclareConst(term));
+            declareConstants.add(new DeclareConstant(term, INT));
             asserts.add(new Assert(
                     new GreaterEqualTerm(
                             term,
@@ -84,7 +83,7 @@ public class ControllerLab1Null {
             isLastD.add(new ValueTerm("IsLast_d" + i));
         }
         for (Term valueTerm : isLastD) {
-            declareConstants.add(new DeclareConst(valueTerm));
+            declareConstants.add(new DeclareConstant(valueTerm, INT));
             asserts.add(new Assert(
                     new GreaterEqualTerm(
                             valueTerm,
@@ -117,7 +116,7 @@ public class ControllerLab1Null {
             }
         }
         for (Term term : MMdd) {
-            declareConstants.add(new DeclareConst(term));
+            declareConstants.add(new DeclareConstant(term, INT));
             asserts.add(new Assert(
                     new GreaterEqualTerm(
                             term,
@@ -130,7 +129,7 @@ public class ControllerLab1Null {
             isFirstD.add(new ValueTerm("IsFirst_d" + i));
         }
         for (Term valueTerm : isFirstD) {
-            declareConstants.add(new DeclareConst(valueTerm));
+            declareConstants.add(new DeclareConstant(valueTerm, INT));
             asserts.add(new Assert(
                     new GreaterEqualTerm(
                             valueTerm,
@@ -164,8 +163,8 @@ public class ControllerLab1Null {
                 ValueTerm up = new ValueTerm("Lu_" + letter + "d" + i);
                 ValueTerm down = new ValueTerm("Ld_" + letter + "d" + i);
 
-                declareConstants.add(new DeclareConst(up));
-                declareConstants.add(new DeclareConst(down));
+                declareConstants.add(new DeclareConstant(up, INT));
+                declareConstants.add(new DeclareConstant(down, INT));
 
                 asserts.add(new Assert(
                         new EqualTerm(
@@ -191,8 +190,8 @@ public class ControllerLab1Null {
                     ValueTerm up = new ValueTerm("Pu_" + letter1 + letter2 + "d" + i);
                     ValueTerm down = new ValueTerm("Pd_" + letter1 + letter2 + "d" + i);
 
-                    declareConstants.add(new DeclareConst(up));
-                    declareConstants.add(new DeclareConst(down));
+                    declareConstants.add(new DeclareConstant(up, INT));
+                    declareConstants.add(new DeclareConstant(down, INT));
 
                     asserts.add(new Assert(
                             new EqualTerm(
@@ -227,8 +226,8 @@ public class ControllerLab1Null {
                         String firstOfA0 = String.valueOf(dominoes.get(j).getUp().charAt(0));
                         String firstOfA1 = String.valueOf(dominoes.get(j).getDown().charAt(0));
 
-                        declareConstants.add(new DeclareConst(up));
-                        declareConstants.add(new DeclareConst(down));
+                        declareConstants.add(new DeclareConstant(up, INT));
+                        declareConstants.add(new DeclareConstant(down, INT));
 
                         asserts.add(new Assert(
                                 new EqualTerm(
@@ -264,8 +263,8 @@ public class ControllerLab1Null {
                         String firstOfA0 = String.valueOf(dominoes.get(i).getUp().charAt(0));
                         String firstOfA1 = String.valueOf(dominoes.get(i).getDown().charAt(0));
 
-                        declareConstants.add(new DeclareConst(up));
-                        declareConstants.add(new DeclareConst(down));
+                        declareConstants.add(new DeclareConstant(up, INT));
+                        declareConstants.add(new DeclareConstant(down, INT));
 
                         asserts.add(new Assert(
                                 new EqualTerm(
@@ -380,7 +379,7 @@ public class ControllerLab1Null {
         }
 
 
-        SMT2 smt2 = new SMT2(declareConstants, asserts);
+        SMT2 smt2 = new SMT2(declareConstants, new ArrayList<>(), asserts);
 
         log.info("\n" + smt2);
         String body = smtGen(smt2.toString());

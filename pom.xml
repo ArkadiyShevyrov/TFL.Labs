@@ -10,6 +10,7 @@
         <module>tfl-lab-lib</module>
         <module>tfl-lab-2-null</module>
         <module>tfl-lab-1-null</module>
+        <module>tfl-lab-lib-smt</module>
     </modules>
 
     <parent>

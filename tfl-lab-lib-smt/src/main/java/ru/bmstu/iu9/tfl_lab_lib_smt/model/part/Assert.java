@@ -1,8 +1,9 @@
-package ru.bmstu.iu9.tfl_lab_1_null.model.smt.part;
+package ru.bmstu.iu9.tfl_lab_lib_smt.model.part;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import ru.bmstu.iu9.tfl_lab_1_null.model.smt.interfaces.Term;
+import ru.bmstu.iu9.tfl_lab_lib_smt.model.Term;
+
 
 @Getter
 @AllArgsConstructor

@@ -1,8 +1,8 @@
-package ru.bmstu.iu9.tfl_lab_1_null.model.smt.term.basic;
+package ru.bmstu.iu9.tfl_lab_lib_smt.model.basic;
 
 import lombok.AllArgsConstructor;
 import lombok.Setter;
-import ru.bmstu.iu9.tfl_lab_1_null.model.smt.interfaces.Term;
+import ru.bmstu.iu9.tfl_lab_lib_smt.model.Term;
 
 import java.util.List;
 
@@ -14,6 +14,11 @@ public class SumTerm implements Term {
 
     public SumTerm(Term... terms) {
         this.terms = List.of(terms);
+    }
+
+    public SumTerm(Term one, Term two) {
+        this.terms.add(one);
+        this.terms.add(two);
     }
 
     @Override

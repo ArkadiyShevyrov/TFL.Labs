@@ -3,13 +3,14 @@ package ru.bmstu.iu9.tfl_lab_lib.model.automaton;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
 @AllArgsConstructor
-public class TransitionFunctionNFA implements TransitionFunction {
+public class TransitionFunctionNFA implements TransitionFunction, Serializable {
 
     private Map<State, Map<Symbol, Set<State>>> tableTransition;
 

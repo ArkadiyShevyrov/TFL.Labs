@@ -162,8 +162,8 @@ public class DominoSolve {
             List<Term> sumDown = new ArrayList<>();
             for (int i = 0; i < dominoes.size(); i++) {
                 Term md = new ValueTerm("!CountDomino_" + i);
-                Term lu = new ValueTerm("Lu_" + letter + "d" + i);
-                Term ld = new ValueTerm("Ld_" + letter + "d" + i);
+                Term lu = new ValueTerm("CountLetter_up_" + i + "_" + letter);
+                Term ld = new ValueTerm("CountLetter_down_" + i + "_" + letter);
 
                 sumUp.add(new MultTerm(md, lu));
                 sumDown.add(new MultTerm(md, ld));

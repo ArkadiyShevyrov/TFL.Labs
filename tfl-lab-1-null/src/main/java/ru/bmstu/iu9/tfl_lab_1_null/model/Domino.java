@@ -1,14 +1,16 @@
 package ru.bmstu.iu9.tfl_lab_1_null.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Getter
+@EqualsAndHashCode
 public class Domino {
-    String up;
-    String down;
+    private String up;
+    private String down;
 
     @Override
     public String toString() {

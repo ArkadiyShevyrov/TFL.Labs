@@ -14,7 +14,7 @@ public class SMT2 {
 
     private final List<DeclareConstant> declareConstants = new ArrayList<>();
 
-    private final List<DeclareFunction> declareFunctions = new ArrayList<>();
+    private final List<DefineConstant> defineConstants = new ArrayList<>();
 
     private final List<Assert> asserts = new ArrayList<>();
 
@@ -23,17 +23,17 @@ public class SMT2 {
             (get-model)
             """;
 
-    public SMT2(List<DeclareConstant> declareConstants, List<DeclareFunction> declareFunctions, List<Assert> asserts) {
+    public SMT2(List<DeclareConstant> declareConstants, List<DefineConstant> defineConstants, List<Assert> asserts) {
         this.declareConstants.addAll(declareConstants);
-        this.declareFunctions.addAll(declareFunctions);
+        this.defineConstants.addAll(defineConstants);
         this.asserts.addAll(asserts);
     }
 
     @Override
     public String toString() {
-        StringBuilder declareFunctions = new StringBuilder();
-        for (DeclareFunction declareFunction : this.declareFunctions) {
-            declareFunctions.append(declareFunction).append("\n");
+        StringBuilder defineConstants = new StringBuilder();
+        for (DefineConstant defineConstant : this.defineConstants) {
+            defineConstants.append(defineConstant).append("\n");
         }
         StringBuilder declareConstants = new StringBuilder();
         for (DeclareConstant declareConstant : this.declareConstants) {
@@ -44,7 +44,7 @@ public class SMT2 {
             asserts.append(assertA).append("\n");
         }
         return header + "\n" +
-                declareFunctions + "\n" +
+                defineConstants + "\n" +
                 declareConstants + "\n" +
                 asserts + "\n" +
                 footer;
